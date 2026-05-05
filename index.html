@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QRForge — Free Professional QR Code Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://unpkg.com/qrcode-generator@1.4.4/qrcode.js"></script>
+<style>
+:root{
+  --bg:#07070f;--bg2:#0e0e1c;--bg3:#14142a;--bg4:#1a1a32;
+  --border:rgba(255,255,255,0.06);--border2:rgba(0,217,245,0.25);
+  --cyan:#00d9f5;--cyan2:#00a8c0;--pink:#ff2d78;--pink2:#c4004d;
+  --gold:#f5a623;--green:#00e5a0;
+  --txt:#eeeeff;--txt2:rgba(238,238,255,0.6);--txt3:rgba(238,238,255,0.3);
+  --glass:rgba(255,255,255,0.03);--glass2:rgba(255,255,255,0.07);
+  --glow:0 0 30px rgba(0,217,245,0.15);
+  --radius:14px;--radius-sm:9px;--radius-xs:6px;
+  --shadow:0 8px 60px rgba(0,0,0,0.7);
+  --font-head:'Syne',sans-serif;--font-body:'Outfit',sans-serif;--font-mono:'JetBrains Mono',monospace;
+  --trans:all 0.22s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:15px}
+body{background:var(--bg);color:var(--txt);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(0,217,245,0.08),transparent),radial-gradient(ellipse 60% 40% at 90% 80%,rgba(255,45,120,0.06),transparent);pointer-events:none;z-index:0}
+/* Grain overlay */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
+/* ===HEADER=== */
+header{position:sticky;top:0;z-index:100;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,7,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--cyan),var(--pink));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;box-shadow:0 0 20px rgba(0,217,245,0.3)}
+.logo-text{font-family:var(--font-head);font-size:1.2rem;font-weight:800;background:linear-gradient(90deg,var(--cyan),#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px}
+.logo-badge{font-size:0.62rem;background:linear-gradient(90deg,var(--cyan),var(--pink));color:#fff;padding:2px 7px;border-radius:99px;font-weight:600;letter-spacing:0.5px;-webkit-text-fill-color:#fff;margin-top:2px}
+nav{display:flex;gap:6px;align-items:center}
+.nav-btn{background:none;border:1px solid var(--border);color:var(--txt2);padding:6px 14px;border-radius:var(--radius-xs);font-family:var(--font-body);font-size:.8rem;cursor:pointer;transition:var(--trans)}
+.nav-btn:hover{border-color:var(--border2);color:var(--cyan);background:var(--primary-dim)}
+/* ===HERO=== */
+.hero{text-align:center;padding:52px 24px 36px;position:relative;z-index:1}
+.hero h1{font-family:var(--font-head);font-size:clamp(2rem,5vw,3.4rem);font-weight:800;line-height:1.1;letter-spacing:-1.5px;margin-bottom:12px}
+.hero h1 span{background:linear-gradient(90deg,var(--cyan),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{color:var(--txt2);font-size:1.02rem;max-width:520px;margin:0 auto 24px;font-weight:300;line-height:1.6}
+.features-row{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.feat-pill{display:flex;align-items:center;gap:5px;background:var(--glass);border:1px solid var(--border);padding:5px 12px;border-radius:99px;font-size:.75rem;color:var(--txt2)}
+.feat-pill i{color:var(--cyan);font-size:.7rem}
+/* ===MAIN LAYOUT=== */
+.app{display:grid;grid-template-columns:1fr 380px;gap:20px;max-width:1280px;margin:0 auto;padding:0 20px 60px;position:relative;z-index:1}
+@media(max-width:960px){.app{grid-template-columns:1fr}}
+/* ===PANEL=== */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;position:relative}
+.panel-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.panel-header i{color:var(--cyan);font-size:.95rem}
+.panel-header h3{font-family:var(--font-head);font-size:.9rem;font-weight:700;letter-spacing:-.3px}
+.panel-body{padding:20px}
+/* ===TYPE SELECTOR=== */
+.type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-bottom:4px}
+.type-btn{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 6px 8px;cursor:pointer;transition:var(--trans);text-align:center;position:relative;overflow:hidden}
+.type-btn:hover{border-color:rgba(0,217,245,0.2);background:rgba(0,217,245,0.04)}
+.type-btn.active{border-color:var(--cyan);background:rgba(0,217,245,0.08);box-shadow:0 0 18px rgba(0,217,245,0.1)}
+.type-btn i{display:block;font-size:1.1rem;margin-bottom:5px;color:var(--txt2);transition:var(--trans)}
+.type-btn.active i{color:var(--cyan)}
+.type-btn span{font-size:.67rem;color:var(--txt3);font-weight:500;display:block;line-height:1.2}
+.type-btn.active span{color:var(--txt2)}
+/* ===TABS=== */
+.tabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:12px 18px;background:none;border:none;color:var(--txt3);font-family:var(--font-body);font-size:.8rem;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:var(--trans);display:flex;align-items:center;gap:6px}
+.tab-btn:hover{color:var(--txt2)}
+.tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+.tab-btn i{font-size:.75rem}
+.tab-pane{display:none;padding:20px}
+.tab-pane.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+/* ===FORM=== */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:.75rem;font-weight:600;color:var(--txt2);margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase}
+.form-group input,.form-group textarea,.form-group select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--txt);font-family:var(--font-body);font-size:.87rem;padding:10px 12px;transition:var(--trans);outline:none;resize:vertical}
+.form-group textarea{min-height:80px}
+.form-group select option{background:var(--bg3);color:var(--txt)}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--cyan2);box-shadow:0 0 0 3px rgba(0,217,245,0.08)}
+.char-count{font-size:.7rem;color:var(--txt3);text-align:right;margin-top:3px;font-family:var(--font-mono)}
+/* ===STYLE OPTIONS=== */
+.style-section{margin-bottom:22px}
+.style-section h4{font-size:.72rem;font-weight:700;color:var(--txt3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
+.dot-grid{display:flex;flex-wrap:wrap;gap:8px}
+.dot-opt{cursor:pointer;border:2px solid var(--border);border-radius:var(--radius-xs);padding:6px;transition:var(--trans);background:var(--glass);display:flex;flex-direction:column;align-items:center;gap:4px;min-width:62px}
+.dot-opt:hover{border-color:rgba(0,217,245,0.3)}
+.dot-opt.active{border-color:var(--cyan);background:rgba(0,217,245,0.07)}
+.dot-preview{width:42px;height:42px;display:flex;align-items:center;justify-content:center}
+.dot-opt span{font-size:.62rem;color:var(--txt3);text-align:center;line-height:1.3}
+.dot-opt.active span{color:var(--cyan)}
+/* Color row */
+.color-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.color-swatch{width:32px;height:32px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:var(--trans);position:relative;overflow:hidden;flex-shrink:0}
+.color-swatch.selected{border-color:#fff;box-shadow:0 0 12px rgba(255,255,255,0.3)}
+.color-swatch.transparent-swatch{background:repeating-conic-gradient(#aaa 0% 25%, #fff 0% 50%) 0 0/16px 16px}
+.color-swatch.custom-swatch{display:flex;align-items:center;justify-content:center;background:var(--bg3);border-color:var(--border)}
+.color-swatch.custom-swatch i{font-size:.8rem;color:var(--txt2)}
+.color-label{font-size:.72rem;color:var(--txt3)}
+.hidden-input{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;inset:0}
+/* Gradient */
+.gradient-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.toggle-label{font-size:.78rem;color:var(--txt2);font-weight:500}
+.toggle{position:relative;display:inline-block;width:40px;height:22px}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--bg4);border-radius:99px;cursor:pointer;transition:.3s;border:1px solid var(--border)}
+.toggle-slider:before{content:'';position:absolute;height:16px;width:16px;left:2px;top:2px;background:var(--txt3);border-radius:50%;transition:.3s}
+.toggle input:checked+.toggle-slider{background:linear-gradient(90deg,var(--cyan2),var(--cyan));border-color:var(--cyan)}
+.toggle input:checked+.toggle-slider:before{transform:translateX(18px);background:#fff}
+/* Gradient type select */
+.grad-type-row{display:flex;gap:6px;margin-bottom:10px}
+.grad-type-btn{flex:1;padding:6px;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--txt3);font-size:.72rem;cursor:pointer;transition:var(--trans);font-family:var(--font-body)}
+.grad-type-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,217,245,0.07)}
+/* Range slider */
+.range-group{display:flex;align-items:center;gap:10px}
+.range-group input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:var(--bg4);border-radius:99px;outline:none;cursor:pointer}
+.range-group input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--cyan);cursor:pointer;box-shadow:0 0 8px rgba(0,217,245,0.4)}
+.range-val{font-family:var(--font-mono);font-size:.75rem;color:var(--cyan);min-width:36px;text-align:right}
+/* Logo area */
+.logo-drop{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;cursor:pointer;transition:var(--trans);position:relative;overflow:hidden;background:var(--glass)}
+.logo-drop:hover,.logo-drop.drag-over{border-color:var(--cyan2);background:rgba(0,217,245,0.04)}
+.logo-drop-icon{font-size:2rem;color:var(--txt3);margin-bottom:8px}
+.logo-drop p{font-size:.8rem;color:var(--txt2);margin-bottom:4px}
+.logo-drop small{font-size:.7rem;color:var(--txt3)}
+.logo-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+.logo-preview-wrap{display:none;align-items:center;gap:12px;padding:12px;background:var(--bg3);border-radius:var(--radius-xs);margin-top:12px}
+.logo-preview-wrap.visible{display:flex}
+.logo-preview-wrap img{width:48px;height:48px;object-fit:contain;border-radius:6px}
+.logo-preview-info{flex:1}
+.logo-preview-info p{font-size:.8rem;font-weight:500}
+.logo-preview-info span{font-size:.72rem;color:var(--txt3)}
+.remove-logo-btn{background:none;border:none;color:var(--pink);cursor:pointer;padding:4px;font-size:.95rem;transition:var(--trans)}
+.remove-logo-btn:hover{color:#ff6b9d}
+/* Builtin icons */
+.icon-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px}
+.icon-btn{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-xs);padding:8px;cursor:pointer;transition:var(--trans);text-align:center}
+.icon-btn:hover,.icon-btn.active{border-color:var(--cyan);background:rgba(0,217,245,0.07)}
+.icon-btn i{display:block;font-size:1.1rem;color:var(--txt2);transition:var(--trans)}
+.icon-btn.active i,.icon-btn:hover i{color:var(--cyan)}
+.icon-btn span{font-size:.6rem;color:var(--txt3);display:block;margin-top:2px}
+/* Settings */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border-bottom:none}
+.setting-info{flex:1}
+.setting-info p{font-size:.82rem;font-weight:500;color:var(--txt)}
+.setting-info span{font-size:.72rem;color:var(--txt3)}
+.ec-btns{display:flex;gap:4px}
+.ec-btn{padding:4px 10px;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--txt3);font-size:.72rem;cursor:pointer;transition:var(--trans);font-family:var(--font-mono)}
+.ec-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,217,245,0.07)}
+/* ===PREVIEW PANEL=== */
+.preview-panel{position:sticky;top:80px;height:fit-content}
+.qr-canvas-wrap{padding:24px;display:flex;justify-content:center;background:var(--bg2);position:relative}
+.qr-canvas-wrap canvas{border-radius:var(--radius-sm);transition:all .35s cubic-bezier(.34,1.56,.64,1);max-width:100%;display:block}
+.qr-empty{width:300px;height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--bg3);border:2px dashed var(--border);border-radius:var(--radius-sm);gap:10px}
+.qr-empty i{font-size:2.5rem;color:var(--txt3)}
+.qr-empty p{font-size:.8rem;color:var(--txt3);text-align:center}
+.qr-pulse{animation:qrPulse .6s cubic-bezier(.34,1.56,.64,1)}
+@keyframes qrPulse{0%{transform:scale(.85);opacity:.5}60%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+/* Actions */
+.actions{padding:16px 20px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.btn-generate{width:100%;padding:13px;background:linear-gradient(135deg,var(--cyan2),var(--cyan));color:#000;font-family:var(--font-head);font-size:.95rem;font-weight:700;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:var(--trans);display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.2px}
+.btn-generate:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(0,217,245,0.35)}
+.btn-generate:active{transform:translateY(0)}
+.btn-generate:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-generate i{font-size:1rem}
+.download-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+.btn-dl{padding:9px 6px;background:var(--glass2);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--txt2);font-family:var(--font-body);font-size:.75rem;font-weight:500;cursor:pointer;transition:var(--trans);display:flex;align-items:center;justify-content:center;gap:5px}
+.btn-dl:hover{border-color:var(--border2);color:var(--cyan);background:rgba(0,217,245,0.07);transform:translateY(-1px)}
+.btn-dl:disabled{opacity:.35;cursor:not-allowed;transform:none}
+/* QR Info */
+.qr-info{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:16px}
+.qr-stat{flex:1;text-align:center}
+.qr-stat label{display:block;font-size:.65rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.qr-stat span{font-family:var(--font-mono);font-size:.78rem;color:var(--cyan)}
+/* ===TOAST=== */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:.82rem;min-width:200px;animation:toastIn .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 40px rgba(0,0,0,.5);pointer-events:all}
+.toast.success{border-color:rgba(0,229,160,.3)}
+.toast.success i{color:var(--green)}
+.toast.error{border-color:rgba(255,45,120,.3)}
+.toast.error i{color:var(--pink)}
+.toast.info i{color:var(--cyan)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px) scale(.95)}to{opacity:1;transform:translateX(0) scale(1)}}
+.toast.removing{animation:toastOut .25s ease forwards}
+@keyframes toastOut{to{opacity:0;transform:translateX(20px) scale(.95)}}
+/* ===FOOTER=== */
+footer{text-align:center;padding:32px 20px;border-top:1px solid var(--border);position:relative;z-index:1}
+footer p{font-size:.8rem;color:var(--txt3)}
+footer a{color:var(--cyan);text-decoration:none}
+/* ===SCROLLBAR=== */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--bg3)}
+/* ===RESPONSIVE=== */
+@media(max-width:640px){
+  .type-grid{grid-template-columns:repeat(4,1fr)}
+  .hero h1{font-size:1.8rem}
+  .app{padding:0 12px 40px}
+  nav .nav-btn{display:none}
+}
+/* Theme presets */
+.color-presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.preset-btn{width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:var(--trans);position:relative}
+.preset-btn.selected{border-color:#fff;transform:scale(1.1)}
+.preset-btn:hover{transform:scale(1.1)}
+/* Copy overlay */
+.copy-overlay{position:absolute;inset:0;background:rgba(0,217,245,0.1);display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);opacity:0;pointer-events:none;transition:opacity .3s}
+.copy-overlay.show{opacity:1}
+.copy-overlay i{font-size:2rem;color:var(--cyan)}
+/* Live indicator */
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px;animation:livePulse 2s infinite}
+@keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,229,160,.4)}50%{box-shadow:0 0 0 5px rgba(0,229,160,0)}}
+/* Section label */
+.section-label{display:flex;align-items:center;gap:6px;margin-bottom:16px}
+.section-label h2{font-family:var(--font-head);font-size:.85rem;color:var(--txt2);font-weight:700;letter-spacing:.4px;text-transform:uppercase}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+/* Tooltip */
+[data-tip]{position:relative;cursor:help}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border);color:var(--txt);font-size:.7rem;padding:5px 9px;border-radius:6px;white-space:nowrap;z-index:100;pointer-events:none;font-family:var(--font-body)}
+/* QR frame */
+.qr-frame-selector{display:flex;gap:6px}
+.frame-opt{cursor:pointer;padding:6px 10px;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-xs);font-size:.72rem;color:var(--txt3);transition:var(--trans)}
+.frame-opt.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,217,245,.07)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="#">
+    <div class="logo-icon"><i class="fas fa-qrcode"></i></div>
+    <div>
+      <div class="logo-text">QRForge</div>
+    </div>
+    <span class="logo-badge">FREE</span>
+  </a>
+  <nav>
+    <button class="nav-btn" onclick="scrollToTop()"><i class="fas fa-home"></i> Home</button>
+    <button class="nav-btn" id="btnSound" onclick="toggleSound()" title="Toggle sound"><i class="fas fa-volume-up"></i></button>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Create <span>Professional</span><br>QR Codes — Free</h1>
+  <p>Full customization, 14 content types, custom logos, gradients, and unique dot styles. No watermarks, no limits.</p>
+  <div class="features-row">
+    <span class="feat-pill"><i class="fas fa-check-circle"></i> No Watermark</span>
+    <span class="feat-pill"><i class="fas fa-check-circle"></i> High Resolution</span>
+    <span class="feat-pill"><i class="fas fa-check-circle"></i> Custom Logo</span>
+    <span class="feat-pill"><i class="fas fa-check-circle"></i> 7 Dot Styles</span>
+    <span class="feat-pill"><i class="fas fa-check-circle"></i> Gradients</span>
+    <span class="feat-pill"><i class="fas fa-check-circle"></i> PNG &amp; SVG Export</span>
+  </div>
+</section>
+
+<!-- MAIN APP -->
+<main class="app">
+
+  <!-- LEFT COLUMN -->
+  <div style="display:flex;flex-direction:column;gap:16px">
+
+    <!-- STEP 1: Type -->
+    <div class="panel">
+      <div class="panel-header">
+        <i class="fas fa-list-ul"></i>
+        <h3>Step 1 — Choose Content Type</h3>
+      </div>
+      <div class="panel-body" style="padding-bottom:16px">
+        <div class="type-grid" id="typeGrid"></div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Content + Customize -->
+    <div class="panel">
+      <div class="panel-header">
+        <i class="fas fa-pen-to-square"></i>
+        <h3>Step 2 — Configure &amp; Customize</h3>
+      </div>
+      <div class="tabs" id="tabsBar">
+        <button class="tab-btn active" data-tab="content"><i class="fas fa-keyboard"></i> Content</button>
+        <button class="tab-btn" data-tab="style"><i class="fas fa-palette"></i> Style</button>
+        <button class="tab-btn" data-tab="logo"><i class="fas fa-image"></i> Logo</button>
+        <button class="tab-btn" data-tab="settings"><i class="fas fa-sliders"></i> Settings</button>
+      </div>
+
+      <!-- CONTENT TAB -->
+      <div class="tab-pane active" id="tab-content">
+        <div id="dynamicFields"></div>
+        <div class="char-count" id="charCount">0 characters</div>
+      </div>
+
+      <!-- STYLE TAB -->
+      <div class="tab-pane" id="tab-style">
+        <!-- Dot Shape -->
+        <div class="style-section">
+          <h4>Dot Shape</h4>
+          <div class="dot-grid" id="dotStyleGrid"></div>
+        </div>
+        <!-- Corner Shape -->
+        <div class="style-section">
+          <h4>Corner Shape</h4>
+          <div class="dot-grid" id="cornerStyleGrid"></div>
+        </div>
+        <!-- Dot Color -->
+        <div class="style-section">
+          <h4>Dot Color</h4>
+          <div class="color-presets" id="dotColorPresets"></div>
+          <div class="color-row">
+            <div class="color-swatch custom-swatch" data-tip="Custom color">
+              <i class="fas fa-eyedropper"></i>
+              <input class="hidden-input" type="color" id="dotColorPicker" value="#000000">
+            </div>
+            <span class="color-label">Custom</span>
+          </div>
+        </div>
+        <!-- Background Color -->
+        <div class="style-section">
+          <h4>Background Color</h4>
+          <div class="color-presets" id="bgColorPresets"></div>
+          <div class="color-row">
+            <div class="color-swatch transparent-swatch selected" id="bgTransparent" style="cursor:pointer" data-tip="Transparent" title="Transparent" onclick="selectBgTransparent()"></div>
+            <div class="color-swatch custom-swatch" data-tip="Custom color">
+              <i class="fas fa-eyedropper"></i>
+              <input class="hidden-input" type="color" id="bgColorPicker" value="#ffffff">
+            </div>
+            <span class="color-label">Custom</span>
+          </div>
+        </div>
+        <!-- Gradient -->
+        <div class="style-section">
+          <div class="toggle-row">
+            <span class="toggle-label"><i class="fas fa-wand-magic-sparkles" style="color:var(--cyan);margin-right:6px"></i>Gradient Dots</span>
+            <label class="toggle"><input type="checkbox" id="gradientToggle" onchange="toggleGradient(this)"><span class="toggle-slider"></span></label>
+          </div>
+          <div id="gradientOptions" style="display:none">
+            <div class="grad-type-row">
+              <button class="grad-type-btn active" data-gtype="linear" onclick="setGradType(this,'linear')">↗ Diagonal</button>
+              <button class="grad-type-btn" data-gtype="linear-h" onclick="setGradType(this,'linear-h')">→ Horizontal</button>
+              <button class="grad-type-btn" data-gtype="linear-v" onclick="setGradType(this,'linear-v')">↓ Vertical</button>
+              <button class="grad-type-btn" data-gtype="radial" onclick="setGradType(this,'radial')">◉ Radial</button>
+            </div>
+            <div class="gradient-row">
+              <div class="form-group"><label>Color 1</label><input type="color" id="grad1" value="#00d9f5" oninput="scheduleRender()" style="width:100%;height:40px;padding:2px;cursor:pointer;border-radius:8px;border:1px solid var(--border)"></div>
+              <div class="form-group"><label>Color 2</label><input type="color" id="grad2" value="#ff2d78" oninput="scheduleRender()" style="width:100%;height:40px;padding:2px;cursor:pointer;border-radius:8px;border:1px solid var(--border)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOGO TAB -->
+      <div class="tab-pane" id="tab-logo">
+        <div class="style-section">
+          <h4>Built-in Icons</h4>
+          <div class="icon-grid" id="builtinIcons"></div>
+          <button class="btn-dl" id="clearIconBtn" onclick="clearBuiltinIcon()" style="width:100%;margin-top:6px"><i class="fas fa-times"></i> Remove Icon</button>
+        </div>
+        <div class="style-section">
+          <h4>Upload Custom Logo</h4>
+          <div class="logo-drop" id="logoDrop">
+            <div class="logo-drop-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+            <p>Drop your logo here or click to browse</p>
+            <small>PNG, SVG, JPG — Transparent background recommended</small>
+            <input type="file" id="logoFile" accept="image/*" onchange="handleLogoUpload(this)">
+          </div>
+          <div class="logo-preview-wrap" id="logoPreviewWrap">
+            <img id="logoPreviewImg" src="" alt="Logo">
+            <div class="logo-preview-info"><p id="logoFileName">logo.png</p><span id="logoFileSize">0 KB</span></div>
+            <button class="remove-logo-btn" onclick="removeLogo()"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        </div>
+        <div class="style-section" id="logoSettingsSection" style="display:none">
+          <h4>Logo Settings</h4>
+          <div class="form-group">
+            <label>Logo Size</label>
+            <div class="range-group">
+              <input type="range" id="logoSizeRange" min="10" max="40" value="25" oninput="updateLogoSize(this)">
+              <span class="range-val" id="logoSizeVal">25%</span>
+            </div>
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Logo Background</span>
+            <label class="toggle"><input type="checkbox" id="logoBgToggle" checked onchange="scheduleRender()"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="form-group">
+            <label>Background Color</label>
+            <input type="color" id="logoBgColor" value="#ffffff" oninput="scheduleRender()" style="width:100%;height:36px;padding:2px;cursor:pointer;border-radius:8px;border:1px solid var(--border)">
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS TAB -->
+      <div class="tab-pane" id="tab-settings">
+        <div class="setting-row">
+          <div class="setting-info"><p>Error Correction</p><span>Higher = more resilient (use H with logo)</span></div>
+          <div class="ec-btns">
+            <button class="ec-btn" data-ec="L" onclick="setEC(this,'L')">L</button>
+            <button class="ec-btn active" data-ec="M" onclick="setEC(this,'M')">M</button>
+            <button class="ec-btn" data-ec="Q" onclick="setEC(this,'Q')">Q</button>
+            <button class="ec-btn" data-ec="H" onclick="setEC(this,'H')">H</button>
+          </div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info"><p>QR Size</p><span>Output image resolution</span></div>
+          <div class="range-group" style="width:180px">
+            <input type="range" id="sizeRange" min="200" max="1200" step="50" value="600" oninput="updateSize(this)">
+            <span class="range-val" id="sizeVal">600px</span>
+          </div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info"><p>Quiet Zone (Margin)</p><span>White space around QR</span></div>
+          <div class="range-group" style="width:180px">
+            <input type="range" id="marginRange" min="0" max="10" step="1" value="4" oninput="updateMargin(this)">
+            <span class="range-val" id="marginVal">4</span>
+          </div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info"><p>Dot Padding</p><span>Spacing between dots</span></div>
+          <div class="range-group" style="width:180px">
+            <input type="range" id="paddingRange" min="0" max="40" step="5" value="15" oninput="updatePadding(this)">
+            <span class="range-val" id="paddingVal">15%</span>
+          </div>
+        </div>
+        <div class="setting-row">
+          <div class="setting-info"><p>Auto-Regenerate</p><span>Update QR as you type</span></div>
+          <label class="toggle"><input type="checkbox" id="autoRegen" checked><span class="toggle-slider"></span></label>
+        </div>
+      </div>
+
+    </div><!-- end panel -->
+  </div>
+
+  <!-- RIGHT COLUMN: PREVIEW -->
+  <div class="panel preview-panel">
+    <div class="panel-header">
+      <i class="fas fa-eye"></i>
+      <h3><span class="live-dot"></span>Live Preview</h3>
+    </div>
+    <div class="qr-canvas-wrap" id="qrCanvasWrap">
+      <div class="copy-overlay" id="copyOverlay"><i class="fas fa-check"></i></div>
+      <div class="qr-empty" id="qrEmpty">
+        <i class="fas fa-qrcode"></i>
+        <p>Fill in content<br>to generate your QR</p>
+      </div>
+      <canvas id="qrCanvas" style="display:none"></canvas>
+    </div>
+    <div class="qr-info" id="qrInfo" style="display:none">
+      <div class="qr-stat"><label>Modules</label><span id="statModules">—</span></div>
+      <div class="qr-stat"><label>Version</label><span id="statVersion">—</span></div>
+      <div class="qr-stat"><label>EC Level</label><span id="statEC">M</span></div>
+      <div class="qr-stat"><label>Chars</label><span id="statChars">0</span></div>
+    </div>
+    <div class="actions">
+      <button class="btn-generate" id="btnGenerate" onclick="generateQR()">
+        <i class="fas fa-bolt"></i> Generate QR Code
+      </button>
+      <div class="download-row">
+        <button class="btn-dl" id="btnPNG" onclick="downloadPNG()" disabled><i class="fas fa-download"></i> PNG</button>
+        <button class="btn-dl" id="btnSVG" onclick="downloadSVG()" disabled><i class="fas fa-vector-square"></i> SVG</button>
+        <button class="btn-dl" id="btnCopy" onclick="copyToClipboard()" disabled><i class="fas fa-copy"></i> Copy</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <p>QRForge — 100% Free &amp; Open · No Watermarks · No Registration · <a href="#">Privacy Policy</a></p>
+  <p style="margin-top:6px;font-size:.72rem">All QR codes are generated locally in your browser. No data is sent to any server.</p>
+</footer>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// =========================================
+// STATE
+// =========================================
+const state = {
+  qrType: 'url',
+  errorLevel: 'M',
+  size: 600,
+  margin: 4,
+  dotPadding: 0.15,
+  dotStyle: 'square',
+  cornerStyle: 'square',
+  dotColor: '#000000',
+  bgColor: '#ffffff',
+  gradientEnabled: false,
+  gradientType: 'linear',
+  gradientColor1: '#00d9f5',
+  gradientColor2: '#ff2d78',
+  logoImg: null,
+  logoSize: 0.25,
+  logoBgEnabled: true,
+  logoBgColor: '#ffffff',
+  builtinIcon: null,
+  generated: false,
+  soundEnabled: true,
+  renderTimeout: null
+};
+
+// =========================================
+// QR TYPES CONFIG
+// =========================================
+const QR_TYPES = {
+  url:      { label:'Website', icon:'fa-globe', fields:[{id:'url',label:'URL / Link',ph:'https://your-website.com',type:'url',req:true}] },
+  text:     { label:'Text', icon:'fa-font', fields:[{id:'text',label:'Text Content',ph:'Enter any text here...',type:'textarea',req:true}] },
+  phone:    { label:'Phone', icon:'fa-phone', fields:[{id:'phone',label:'Phone Number',ph:'+1 234 567 8900',type:'tel',req:true}] },
+  email:    { label:'Email', icon:'fa-envelope', fields:[{id:'email',label:'Email Address',ph:'name@example.com',type:'email',req:true},{id:'subject',label:'Subject (optional)',ph:'Hello!',type:'text'},{id:'body',label:'Message (optional)',ph:'Your message...',type:'textarea'}] },
+  sms:      { label:'SMS', icon:'fa-comment-sms', fields:[{id:'phone',label:'Phone Number',ph:'+1 234 567 8900',type:'tel',req:true},{id:'message',label:'Message (optional)',ph:'Hello!',type:'textarea'}] },
+  wifi:     { label:'WiFi', icon:'fa-wifi', fields:[{id:'ssid',label:'Network Name (SSID)',ph:'MyWiFiNetwork',type:'text',req:true},{id:'password',label:'Password',ph:'••••••••',type:'password'},{id:'security',label:'Security',type:'select',opts:['WPA/WPA2','WEP','None']},{id:'hidden',label:'Hidden Network',type:'select',opts:['No','Yes']}] },
+  vcard:    { label:'Contact', icon:'fa-address-card', fields:[{id:'fn',label:'First Name',ph:'John',type:'text',req:true},{id:'ln',label:'Last Name',ph:'Doe',type:'text'},{id:'phone',label:'Phone',ph:'+1 234 567 8900',type:'tel'},{id:'email',label:'Email',ph:'john@example.com',type:'email'},{id:'org',label:'Organization',ph:'Company Inc.',type:'text'},{id:'title',label:'Job Title',ph:'CEO',type:'text'},{id:'url',label:'Website',ph:'https://example.com',type:'url'},{id:'addr',label:'Address',ph:'123 Main St, City',type:'text'}] },
+  whatsapp: { label:'WhatsApp', icon:'fa-whatsapp', fa:'fab', fields:[{id:'phone',label:'Phone (with country code)',ph:'+1 234 567 8900',type:'tel',req:true},{id:'message',label:'Pre-filled Message',ph:'Hello! I saw your QR code...',type:'textarea'}] },
+  telegram: { label:'Telegram', icon:'fa-telegram', fa:'fab', fields:[{id:'user',label:'Username or Phone',ph:'username',type:'text',req:true}] },
+  instagram:{ label:'Instagram', icon:'fa-instagram', fa:'fab', fields:[{id:'user',label:'Instagram Username',ph:'@username',type:'text',req:true}] },
+  twitter:  { label:'Twitter/X', icon:'fa-x-twitter', fa:'fab', fields:[{id:'user',label:'Twitter Username',ph:'@username',type:'text',req:true}] },
+  youtube:  { label:'YouTube', icon:'fa-youtube', fa:'fab', fields:[{id:'url',label:'Channel or Video URL',ph:'https://youtube.com/@channel',type:'url',req:true}] },
+  location: { label:'Location', icon:'fa-location-dot', fields:[{id:'lat',label:'Latitude',ph:'40.7128',type:'number',req:true},{id:'lon',label:'Longitude',ph:'-74.0060',type:'number',req:true},{id:'name',label:'Place Name (optional)',ph:'Times Square',type:'text'}] },
+  bitcoin:  { label:'Bitcoin', icon:'fa-bitcoin', fa:'fab', fields:[{id:'address',label:'Bitcoin Address',ph:'1A1zP1eP5QGefi2...',type:'text',req:true},{id:'amount',label:'Amount (BTC)',ph:'0.001',type:'number'},{id:'label',label:'Label',ph:'Payment',type:'text'}] }
+};
+
+// =========================================
+// DOT STYLES CONFIG
+// =========================================
+const DOT_STYLES = [
+  { id:'square', label:'Square', svg:'<rect x="5" y="5" width="12" height="12"/>'},
+  { id:'rounded', label:'Rounded', svg:'<rect x="5" y="5" width="12" height="12" rx="3"/>'},
+  { id:'dots', label:'Dots', svg:'<circle cx="11" cy="11" r="6"/>'},
+  { id:'extra-rounded', label:'Extra Round', svg:'<rect x="5" y="5" width="12" height="12" rx="5"/>'},
+  { id:'classy', label:'Diamond', svg:'<rect x="11" y="5" width="9" height="9" rx="1" transform="rotate(45 11 11)"/>'},
+  { id:'connected', label:'Connected', svg:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="12" y="3" width="7" height="7" rx="2"/><rect x="3" y="12" width="7" height="7" rx="2"/><rect x="12" y="12" width="7" height="7" rx="2"/>'},
+  { id:'star', label:'Star', svg:'<polygon points="11,4 12.9,9.2 18.5,9.2 14,12.2 15.8,17.3 11,14.2 6.2,17.3 8,12.2 3.5,9.2 9.1,9.2"/>'}
+];
+
+const CORNER_STYLES = [
+  { id:'square', label:'Square', svg:'<rect x="3" y="3" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"/><rect x="7" y="7" width="8" height="8"/>'},
+  { id:'rounded', label:'Rounded', svg:'<rect x="3" y="3" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><rect x="7" y="7" width="8" height="8" rx="2"/>'},
+  { id:'dot', label:'Dot', svg:'<rect x="3" y="3" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="11" cy="11" r="4"/>'}
+];
+
+// =========================================
+// COLOR PRESETS
+// =========================================
+const DOT_PRESETS = ['#000000','#1a1a2e','#0f3460','#16213e','#e94560','#533483','#2b2d42','#1b4332','#7b2d8b','#d62828'];
+const BG_PRESETS  = ['#ffffff','#f8f9fa','#fff3e0','#e8f5e9','#e3f2fd','#fce4ec','#f3e5f5','#fffde7','#e0f7fa','#fafafa'];
+
+// =========================================
+// BUILTIN ICONS
+// =========================================
+const BUILTIN_ICONS = [
+  {id:'whatsapp', icon:'fa-whatsapp', fa:'fab', label:'WhatsApp', svg:null},
+  {id:'instagram', icon:'fa-instagram', fa:'fab', label:'Instagram', svg:null},
+  {id:'twitter', icon:'fa-x-twitter', fa:'fab', label:'Twitter', svg:null},
+  {id:'youtube', icon:'fa-youtube', fa:'fab', label:'YouTube', svg:null},
+  {id:'telegram', icon:'fa-telegram', fa:'fab', label:'Telegram', svg:null},
+  {id:'facebook', icon:'fa-facebook', fa:'fab', label:'Facebook', svg:null},
+  {id:'linkedin', icon:'fa-linkedin', fa:'fab', label:'LinkedIn', svg:null},
+  {id:'tiktok', icon:'fa-tiktok', fa:'fab', label:'TikTok', svg:null},
+  {id:'github', icon:'fa-github', fa:'fab', label:'GitHub', svg:null},
+  {id:'globe', icon:'fa-globe', fa:'fas', label:'Website', svg:null},
+  {id:'envelope', icon:'fa-envelope', fa:'fas', label:'Email', svg:null},
+  {id:'phone', icon:'fa-phone', fa:'fas', label:'Phone', svg:null},
+  {id:'wifi', icon:'fa-wifi', fa:'fas', label:'WiFi', svg:null},
+  {id:'bitcoin', icon:'fa-bitcoin', fa:'fab', label:'Bitcoin', svg:null},
+  {id:'location', icon:'fa-location-dot', fa:'fas', label:'Location', svg:null}
+];
+
+// =========================================
+// INIT
+// =========================================
+document.addEventListener('DOMContentLoaded', () => {
+  buildTypeGrid();
+  buildDotStyleGrid();
+  buildCornerStyleGrid();
+  buildColorPresets();
+  buildBuiltinIcons();
+  renderTypeFields('url');
+  setupTabs();
+  setupDragDrop();
+  document.getElementById('dotColorPicker').addEventListener('input', e => { state.dotColor = e.target.value; scheduleRender(); });
+  document.getElementById('bgColorPicker').addEventListener('input', e => { state.bgColor = e.target.value; document.querySelectorAll('#bgColorPresets .preset-btn').forEach(b=>b.classList.remove('selected')); document.getElementById('bgTransparent').classList.remove('selected'); scheduleRender(); });
+});
+
+function buildTypeGrid() {
+  const grid = document.getElementById('typeGrid');
+  Object.entries(QR_TYPES).forEach(([id, cfg]) => {
+    const btn = document.createElement('button');
+    btn.className = 'type-btn' + (id === 'url' ? ' active' : '');
+    btn.dataset.type = id;
+    btn.innerHTML = `<i class="${cfg.fa||'fas'} ${cfg.icon}"></i><span>${cfg.label}</span>`;
+    btn.onclick = () => selectType(id);
+    grid.appendChild(btn);
+  });
+}
+
+function buildDotStyleGrid() {
+  const grid = document.getElementById('dotStyleGrid');
+  DOT_STYLES.forEach(ds => {
+    const el = document.createElement('div');
+    el.className = 'dot-opt' + (ds.id === 'square' ? ' active' : '');
+    el.dataset.style = ds.id;
+    el.innerHTML = `<div class="dot-preview"><svg width="22" height="22" viewBox="0 0 22 22" fill="var(--cyan)">${ds.svg}</svg></div><span>${ds.label}</span>`;
+    el.onclick = () => {
+      document.querySelectorAll('.dot-opt[data-style]').forEach(b=>b.classList.remove('active'));
+      el.classList.add('active');
+      state.dotStyle = ds.id;
+      scheduleRender();
+    };
+    grid.appendChild(el);
+  });
+}
+
+function buildCornerStyleGrid() {
+  const grid = document.getElementById('cornerStyleGrid');
+  CORNER_STYLES.forEach(cs => {
+    const el = document.createElement('div');
+    el.className = 'dot-opt' + (cs.id === 'square' ? ' active' : '');
+    el.dataset.corner = cs.id;
+    el.innerHTML = `<div class="dot-preview"><svg width="22" height="22" viewBox="0 0 22 22" fill="var(--cyan)" color="var(--cyan)">${cs.svg}</svg></div><span>${cs.label}</span>`;
+    el.onclick = () => {
+      document.querySelectorAll('.dot-opt[data-corner]').forEach(b=>b.classList.remove('active'));
+      el.classList.add('active');
+      state.cornerStyle = cs.id;
+      scheduleRender();
+    };
+    grid.appendChild(el);
+  });
+}
+
+function buildColorPresets() {
+  const dotPre = document.getElementById('dotColorPresets');
+  DOT_PRESETS.forEach((c, i) => {
+    const b = document.createElement('div');
+    b.className = 'preset-btn' + (i===0?' selected':'');
+    b.style.background = c;
+    b.title = c;
+    b.onclick = () => {
+      document.querySelectorAll('#dotColorPresets .preset-btn').forEach(x=>x.classList.remove('selected'));
+      b.classList.add('selected');
+      state.dotColor = c;
+      document.getElementById('dotColorPicker').value = c;
+      scheduleRender();
+    };
+    dotPre.appendChild(b);
+  });
+  const bgPre = document.getElementById('bgColorPresets');
+  BG_PRESETS.forEach((c, i) => {
+    const b = document.createElement('div');
+    b.className = 'preset-btn';
+    b.style.background = c;
+    b.title = c;
+    b.onclick = () => {
+      document.querySelectorAll('#bgColorPresets .preset-btn').forEach(x=>x.classList.remove('selected'));
+      document.getElementById('bgTransparent').classList.remove('selected');
+      b.classList.add('selected');
+      state.bgColor = c;
+      document.getElementById('bgColorPicker').value = c;
+      scheduleRender();
+    };
+    bgPre.appendChild(b);
+  });
+}
+
+function buildBuiltinIcons() {
+  const grid = document.getElementById('builtinIcons');
+  BUILTIN_ICONS.forEach(icon => {
+    const el = document.createElement('div');
+    el.className = 'icon-btn';
+    el.dataset.iconId = icon.id;
+    el.innerHTML = `<i class="${icon.fa||'fas'} ${icon.icon}"></i><span>${icon.label}</span>`;
+    el.onclick = () => selectBuiltinIcon(icon.id, el);
+    grid.appendChild(el);
+  });
+}
+
+function selectBuiltinIcon(id, el) {
+  document.querySelectorAll('.icon-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  state.builtinIcon = id;
+  // Generate icon on canvas as logo
+  generateIconCanvas(id);
+  document.getElementById('logoSettingsSection').style.display = '';
+  scheduleRender();
+}
+
+function generateIconCanvas(iconId) {
+  const icon = BUILTIN_ICONS.find(i=>i.id===iconId);
+  if (!icon) return;
+  // Create temp canvas with icon
+  const size = 200;
+  const c = document.createElement('canvas');
+  c.width = size; c.height = size;
+  const ctx = c.getContext('2d');
+  // Draw colored circle background
+  const colors = {
+    whatsapp:'#25D366', instagram:'#E1306C', twitter:'#000000', youtube:'#FF0000',
+    telegram:'#0088cc', facebook:'#1877F2', linkedin:'#0A66C2', tiktok:'#000000',
+    github:'#333333', globe:'#0066cc', envelope:'#ea4335', phone:'#34a853',
+    wifi:'#007aff', bitcoin:'#F7931A', location:'#FF4444'
+  };
+  ctx.fillStyle = colors[iconId] || '#333';
+  roundRectCtx(ctx, 0, 0, size, size, size*0.22, colors[iconId]||'#333');
+  // Draw FA icon as text using unicode
+  const faMap = {
+    whatsapp:'', instagram:'', twitter:'𝕏', youtube:'', telegram:'',
+    facebook:'', linkedin:'', tiktok:'', github:'', globe:'',
+    envelope:'', phone:'', wifi:'', bitcoin:'', location:''
+  };
+  // Use a data URL approach with an img + fontawesome - simpler approach: use SVG
+  const svgMap = {
+    whatsapp:`<path fill="white" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>`,
+    instagram:`<path fill="white" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>`,
+    youtube:`<path fill="white" d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/>`,
+    globe:`<path fill="white" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>`,
+    envelope:`<path fill="white" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>`,
+    phone:`<path fill="white" d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/>`,
+    wifi:`<path fill="white" d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/>`,
+    location:`<path fill="white" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>`,
+    bitcoin:`<path fill="white" d="M11.5 10.5h2c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5h-2v3zm0 3.5h2.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5H11.5V14zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm2.5 14H11v1h-1.5v-1H8v-1.5h1V9.5H8V8h1.5V7H11v1h1V7h1.5v1.17c1.03.28 1.75 1.2 1.75 2.33 0 .68-.27 1.3-.7 1.77.8.42 1.33 1.25 1.33 2.23 0 1.38-1.07 2.5-2.38 2.5z"/>`,
+    facebook:`<path fill="white" d="M20 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h8.615v-6.96h-2.338v-2.725h2.338v-2c0-2.325 1.42-3.592 3.5-3.592.699-.002 1.399.034 2.095.107v2.42h-1.435c-1.128 0-1.348.538-1.348 1.325v1.735h2.697l-.35 2.725h-2.348V21H20a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1z"/>`,
+    linkedin:`<path fill="white" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>`,
+    tiktok:`<path fill="white" d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/>`,
+    github:`<path fill="white" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>`,
+    telegram:`<path fill="white" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>`
+  };
+  // Create an image with SVG
+  const bgColor = (colors[iconId] || '#333');
+  const svgContent = svgMap[iconId] || `<circle cx="12" cy="12" r="10" fill="white"/>`;
+  const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="200" height="200"><rect width="24" height="24" rx="5" fill="${bgColor}"/>${svgContent}</svg>`;
+  const img = new Image();
+  img.onload = () => {
+    state.logoImg = img;
+    scheduleRender();
+  };
+  img.src = 'data:image/svg+xml;base64,' + btoa(svgStr);
+}
+
+function setupTabs() {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-'+tab).classList.add('active');
+    });
+  });
+}
+
+function setupDragDrop() {
+  const drop = document.getElementById('logoDrop');
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+  drop.addEventListener('drop', e => {
+    e.preventDefault();
+    drop.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) processLogoFile(file);
+  });
+}
+
+// =========================================
+// TYPE SELECTION
+// =========================================
+function selectType(id) {
+  state.qrType = id;
+  document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === id));
+  renderTypeFields(id);
+  scheduleRender();
+  playClickSound();
+}
+
+function renderTypeFields(type) {
+  const cfg = QR_TYPES[type];
+  const cont = document.getElementById('dynamicFields');
+  cont.innerHTML = '';
+  cfg.fields.forEach(f => {
+    const grp = document.createElement('div');
+    grp.className = 'form-group';
+    const lbl = document.createElement('label');
+    lbl.textContent = f.label + (f.req ? ' *' : '');
+    grp.appendChild(lbl);
+    let inp;
+    if (f.type === 'textarea') {
+      inp = document.createElement('textarea');
+      inp.rows = 3;
+    } else if (f.type === 'select') {
+      inp = document.createElement('select');
+      f.opts.forEach(o => { const opt = document.createElement('option'); opt.value = o; opt.textContent = o; inp.appendChild(opt); });
+    } else {
+      inp = document.createElement('input');
+      inp.type = f.type;
+    }
+    inp.id = 'field_'+f.id;
+    inp.placeholder = f.ph || '';
+    inp.addEventListener('input', () => { updateCharCount(); if (document.getElementById('autoRegen').checked) scheduleRender(); });
+    grp.appendChild(inp);
+    cont.appendChild(grp);
+  });
+  updateCharCount();
+}
+
+function getFieldValues() {
+  const vals = {};
+  const cfg = QR_TYPES[state.qrType];
+  cfg.fields.forEach(f => {
+    const el = document.getElementById('field_'+f.id);
+    if (el) vals[f.id] = el.value.trim();
+  });
+  return vals;
+}
+
+function buildQRContent(type, vals) {
+  const g = id => vals[id] || '';
+  switch(type) {
+    case 'url':       return g('url') || 'https://';
+    case 'text':      return g('text');
+    case 'phone':     return 'tel:' + g('phone');
+    case 'email': {
+      let s = 'mailto:' + g('email');
+      const p = [];
+      if (g('subject')) p.push('subject=' + encodeURIComponent(g('subject')));
+      if (g('body'))    p.push('body=' + encodeURIComponent(g('body')));
+      return p.length ? s + '?' + p.join('&') : s;
+    }
+    case 'sms': {
+      const msg = g('message');
+      return 'sms:' + g('phone') + (msg ? '?body=' + encodeURIComponent(msg) : '');
+    }
+    case 'wifi': {
+      const sec = g('security') === 'None' ? 'nopass' : (g('security') === 'WEP' ? 'WEP' : 'WPA');
+      const hidden = g('hidden') === 'Yes' ? 'true' : 'false';
+      return `WIFI:T:${sec};S:${g('ssid')};P:${g('password')};H:${hidden};;`;
+    }
+    case 'vcard': {
+      return [
+        'BEGIN:VCARD','VERSION:3.0',
+        `N:${g('ln')};${g('fn')}`,
+        `FN:${g('fn')} ${g('ln')}`,
+        g('phone') ? `TEL:${g('phone')}` : '',
+        g('email') ? `EMAIL:${g('email')}` : '',
+        g('org')   ? `ORG:${g('org')}` : '',
+        g('title') ? `TITLE:${g('title')}` : '',
+        g('url')   ? `URL:${g('url')}` : '',
+        g('addr')  ? `ADR:;;${g('addr')}` : '',
+        'END:VCARD'
+      ].filter(Boolean).join('\n');
+    }
+    case 'whatsapp': {
+      const num = g('phone').replace(/\D/g,'');
+      return `https://wa.me/${num}` + (g('message') ? `?text=${encodeURIComponent(g('message'))}` : '');
+    }
+    case 'telegram':  return 'https://t.me/' + g('user').replace('@','');
+    case 'instagram': return 'https://instagram.com/' + g('user').replace('@','');
+    case 'twitter':   return 'https://twitter.com/' + g('user').replace('@','');
+    case 'youtube':   return g('url');
+    case 'location':  return `geo:${g('lat')},${g('lon')}` + (g('name') ? `?q=${encodeURIComponent(g('name'))}` : '');
+    case 'bitcoin': {
+      let s = 'bitcoin:' + g('address');
+      const p = [];
+      if (g('amount')) p.push('amount=' + g('amount'));
+      if (g('label'))  p.push('label=' + encodeURIComponent(g('label')));
+      return p.length ? s + '?' + p.join('&') : s;
+    }
+    default: return '';
+  }
+}
+
+function updateCharCount() {
+  const vals = getFieldValues();
+  const content = buildQRContent(state.qrType, vals);
+  document.getElementById('charCount').textContent = content.length + ' characters';
+}
+
+// =========================================
+// QR GENERATION + RENDERING
+// =========================================
+function scheduleRender() {
+  if (!state.generated) return;
+  clearTimeout(state.renderTimeout);
+  state.renderTimeout = setTimeout(doRender, 150);
+}
+
+function generateQR() {
+  const vals = getFieldValues();
+  const content = buildQRContent(state.qrType, vals);
+  if (!content || content.length < 2) {
+    showToast('Please fill in the required fields first.', 'error');
+    return;
+  }
+  state.content = content;
+  state.generated = true;
+  doRender();
+  playSuccessSound();
+  showToast('QR Code generated!', 'success');
+}
+
+function doRender() {
+  if (!state.content) return;
+  const canvas = document.getElementById('qrCanvas');
+  try {
+    const qr = qrcode(0, state.errorLevel);
+    qr.addData(state.content);
+    qr.make();
+    const moduleCount = qr.getModuleCount();
+    renderQRCanvas(canvas, qr, moduleCount);
+    document.getElementById('qrEmpty').style.display = 'none';
+    canvas.style.display = 'block';
+    canvas.classList.remove('qr-pulse');
+    void canvas.offsetWidth;
+    canvas.classList.add('qr-pulse');
+    // Update stats
+    document.getElementById('qrInfo').style.display = 'flex';
+    document.getElementById('statModules').textContent = moduleCount + 'x' + moduleCount;
+    document.getElementById('statVersion').textContent = Math.round((moduleCount-17)/4);
+    document.getElementById('statEC').textContent = state.errorLevel;
+    document.getElementById('statChars').textContent = state.content.length;
+    // Enable download buttons
+    ['btnPNG','btnSVG','btnCopy'].forEach(id => document.getElementById(id).disabled = false);
+  } catch(e) {
+    showToast('Error: Content too large or invalid.', 'error');
+    console.error(e);
+  }
+}
+
+// =========================================
+// CANVAS RENDERER
+// =========================================
+function renderQRCanvas(canvas, qr, moduleCount) {
+  const size = state.size;
+  const margin = state.margin;
+  const totalMods = moduleCount + margin * 2;
+  const cell = size / totalMods;
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, size, size);
+  // Background
+  if (state.bgColor && state.bgColor !== 'transparent') {
+    ctx.fillStyle = state.bgColor;
+    ctx.fillRect(0, 0, size, size);
+  }
+  // Build matrix
+  const matrix = [];
+  for (let r = 0; r < moduleCount; r++) {
+    matrix[r] = [];
+    for (let c = 0; c < moduleCount; c++) matrix[r][c] = qr.isDark(r, c);
+  }
+  // Determine fill
+  let fill;
+  if (state.gradientEnabled) {
+    let grad;
+    const gt = state.gradientType;
+    if (gt === 'linear')   grad = ctx.createLinearGradient(0, 0, size, size);
+    else if (gt === 'linear-h') grad = ctx.createLinearGradient(0, 0, size, 0);
+    else if (gt === 'linear-v') grad = ctx.createLinearGradient(0, 0, 0, size);
+    else grad = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size*0.65);
+    grad.addColorStop(0, state.gradientColor1);
+    grad.addColorStop(1, state.gradientColor2);
+    fill = grad;
+  } else {
+    fill = state.dotColor;
+  }
+  const bgFill = (state.bgColor && state.bgColor !== 'transparent') ? state.bgColor : '#ffffff';
+  // Draw finder patterns
+  const finderPositions = [{r:0,c:0},{r:0,c:moduleCount-7},{r:moduleCount-7,c:0}];
+  finderPositions.forEach(({r: fr, c: fc}) => {
+    drawFinder(ctx, (fc+margin)*cell, (fr+margin)*cell, cell, fill, bgFill, state.cornerStyle);
+  });
+  // Draw data modules
+  ctx.fillStyle = fill;
+  for (let r = 0; r < moduleCount; r++) {
+    for (let c = 0; c < moduleCount; c++) {
+      if (!matrix[r][c]) continue;
+      if (isFinderZone(r, c, moduleCount)) continue;
+      const x = (c + margin) * cell;
+      const y = (r + margin) * cell;
+      ctx.fillStyle = fill;
+      drawDot(ctx, x, y, cell, state.dotStyle, matrix, r, c, moduleCount, state.dotPadding);
+    }
+  }
+  // Draw logo
+  if (state.logoImg) {
+    drawLogo(ctx, state.logoImg, size, state.logoSize, state.logoBgEnabled, state.logoBgColor);
+  }
+}
+
+function isFinderZone(r, c, n) {
+  if (r < 7 && c < 7) return true;
+  if (r < 7 && c >= n-7) return true;
+  if (r >= n-7 && c < 7) return true;
+  return false;
+}
+
+function drawFinder(ctx, x, y, cell, fill, bgFill, style) {
+  const s7 = cell * 7;
+  const s5 = cell * 5;
+  const s3 = cell * 3;
+  if (style === 'square') {
+    ctx.fillStyle = fill;
+    // Outer border
+    ctx.fillRect(x, y, s7, cell);
+    ctx.fillRect(x, y+s7-cell, s7, cell);
+    ctx.fillRect(x, y+cell, cell, s5);
+    ctx.fillRect(x+s7-cell, y+cell, cell, s5);
+    // Inner 3x3
+    ctx.fillRect(x+2*cell, y+2*cell, s3, s3);
+  } else if (style === 'rounded') {
+    const rr = cell*1.4;
+    ctx.fillStyle = fill;
+    roundRectCtx(ctx, x, y, s7, s7, rr, fill);
+    roundRectCtx(ctx, x+cell, y+cell, s5, s5, cell*0.7, bgFill);
+    roundRectCtx(ctx, x+2*cell, y+2*cell, s3, s3, cell*0.9, fill);
+  } else if (style === 'dot') {
+    ctx.fillStyle = fill;
+    roundRectCtx(ctx, x, y, s7, s7, cell*1.6, fill);
+    roundRectCtx(ctx, x+cell, y+cell, s5, s5, cell*0.8, bgFill);
+    ctx.beginPath();
+    ctx.arc(x+s7/2, y+s7/2, cell*1.5, 0, Math.PI*2);
+    ctx.fillStyle = fill;
+    ctx.fill();
+  }
+}
+
+function roundRectCtx(ctx, x, y, w, h, r, fillStyle) {
+  r = Math.min(r, w/2, h/2);
+  ctx.fillStyle = fillStyle;
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x+r, y+h);
+  ctx.arcTo(x, y+h, x, y+h-r, r);
+  ctx.lineTo(x, y+r);
+  ctx.arcTo(x, y, x+r, y, r);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawDot(ctx, x, y, size, style, matrix, r, c, n, padding) {
+  const pad = size * padding;
+  const px = x + pad/2, py = y + pad/2;
+  const ps = size - pad;
+  switch(style) {
+    case 'square':
+      ctx.fillRect(px, py, ps, ps);
+      break;
+    case 'rounded':
+      roundRectCtx(ctx, px, py, ps, ps, ps*0.28, ctx.fillStyle);
+      break;
+    case 'dots':
+      ctx.beginPath();
+      ctx.arc(x+size/2, y+size/2, ps/2, 0, Math.PI*2);
+      ctx.fill();
+      break;
+    case 'extra-rounded':
+      roundRectCtx(ctx, px, py, ps, ps, ps*0.45, ctx.fillStyle);
+      break;
+    case 'classy': {
+      const cx = x+size/2, cy = y+size/2, hs = ps*0.5;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(Math.PI/4);
+      ctx.fillRect(-hs*0.75, -hs*0.75, hs*1.5, hs*1.5);
+      ctx.restore();
+      break;
+    }
+    case 'star':
+      drawStarShape(ctx, x+size/2, y+size/2, ps*0.48, ps*0.2, 5);
+      break;
+    case 'connected':
+      drawConnectedDot(ctx, x, y, size, matrix, r, c, n, pad);
+      break;
+    default:
+      ctx.fillRect(px, py, ps, ps);
+  }
+}
+
+function drawStarShape(ctx, cx, cy, outerR, innerR, pts) {
+  ctx.beginPath();
+  for (let i = 0; i < pts*2; i++) {
+    const a = (i*Math.PI)/pts - Math.PI/2;
+    const rr = i%2===0 ? outerR : innerR;
+    i===0 ? ctx.moveTo(cx+rr*Math.cos(a), cy+rr*Math.sin(a)) : ctx.lineTo(cx+rr*Math.cos(a), cy+rr*Math.sin(a));
+  }
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawConnectedDot(ctx, x, y, size, matrix, r, c, n, pad) {
+  const hasR = c+1 < n && matrix[r] && matrix[r][c+1] && !isFinderZone(r,c+1,n);
+  const hasB = r+1 < n && matrix[r+1] && matrix[r+1][c] && !isFinderZone(r+1,c,n);
+  const hasL = c-1 >= 0 && matrix[r] && matrix[r][c-1] && !isFinderZone(r,c-1,n);
+  const hasT = r-1 >= 0 && matrix[r-1] && matrix[r-1][c] && !isFinderZone(r-1,c,n);
+  const rad = size * 0.38;
+  const tl = (!hasT && !hasL) ? rad : 1;
+  const tr = (!hasT && !hasR) ? rad : 1;
+  const br = (!hasB && !hasR) ? rad : 1;
+  const bl = (!hasB && !hasL) ? rad : 1;
+  // Draw with variable-radius corners
+  const p = pad/2;
+  const lx = x+p, ty = y+p, rx = x+size-p, by = y+size-p;
+  ctx.beginPath();
+  ctx.moveTo(lx+tl, ty);
+  ctx.lineTo(rx-tr, ty);
+  ctx.arcTo(rx, ty, rx, ty+tr, tr);
+  ctx.lineTo(rx, by-br);
+  ctx.arcTo(rx, by, rx-br, by, br);
+  ctx.lineTo(lx+bl, by);
+  ctx.arcTo(lx, by, lx, by-bl, bl);
+  ctx.lineTo(lx, ty+tl);
+  ctx.arcTo(lx, ty, lx+tl, ty, tl);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawLogo(ctx, img, size, ratio, bgEnabled, bgColor) {
+  const logoS = size * ratio;
+  const lx = (size - logoS) / 2, ly = (size - logoS) / 2;
+  if (bgEnabled) {
+    const pad = logoS * 0.15;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.3)';
+    ctx.shadowBlur = 8;
+    roundRectCtx(ctx, lx-pad, ly-pad, logoS+pad*2, logoS+pad*2, pad*0.8, bgColor||'#ffffff');
+    ctx.restore();
+  }
+  ctx.drawImage(img, lx, ly, logoS, logoS);
+}
+
+// =========================================
+// SETTINGS HANDLERS
+// =========================================
+function setEC(btn, level) {
+  document.querySelectorAll('.ec-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  state.errorLevel = level;
+  document.getElementById('statEC').textContent = level;
+  scheduleRender();
+}
+
+function updateSize(el) {
+  state.size = parseInt(el.value);
+  document.getElementById('sizeVal').textContent = state.size + 'px';
+  scheduleRender();
+}
+
+function updateMargin(el) {
+  state.margin = parseInt(el.value);
+  document.getElementById('marginVal').textContent = state.margin;
+  scheduleRender();
+}
+
+function updatePadding(el) {
+  state.dotPadding = parseInt(el.value) / 100;
+  document.getElementById('paddingVal').textContent = el.value + '%';
+  scheduleRender();
+}
+
+function updateLogoSize(el) {
+  state.logoSize = parseInt(el.value) / 100;
+  document.getElementById('logoSizeVal').textContent = el.value + '%';
+  scheduleRender();
+}
+
+function toggleGradient(cb) {
+  state.gradientEnabled = cb.checked;
+  document.getElementById('gradientOptions').style.display = cb.checked ? '' : 'none';
+  scheduleRender();
+}
+
+function setGradType(btn, type) {
+  document.querySelectorAll('.grad-type-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  state.gradientType = type;
+  scheduleRender();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('grad1').addEventListener('input', e => { state.gradientColor1 = e.target.value; scheduleRender(); });
+  document.getElementById('grad2').addEventListener('input', e => { state.gradientColor2 = e.target.value; scheduleRender(); });
+  document.getElementById('logoBgToggle').addEventListener('change', e => { state.logoBgEnabled = e.target.checked; scheduleRender(); });
+  document.getElementById('logoBgColor').addEventListener('input', e => { state.logoBgColor = e.target.value; scheduleRender(); });
+});
+
+function selectBgTransparent() {
+  state.bgColor = 'transparent';
+  document.querySelectorAll('#bgColorPresets .preset-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('bgTransparent').classList.add('selected');
+  scheduleRender();
+}
+
+// =========================================
+// LOGO UPLOAD
+// =========================================
+function handleLogoUpload(input) {
+  if (!input.files[0]) return;
+  processLogoFile(input.files[0]);
+}
+
+function processLogoFile(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      state.logoImg = img;
+      state.builtinIcon = null;
+      document.querySelectorAll('.icon-btn').forEach(b=>b.classList.remove('active'));
+      document.getElementById('logoPreviewImg').src = e.target.result;
+      document.getElementById('logoFileName').textContent = file.name;
+      document.getElementById('logoFileSize').textContent = (file.size/1024).toFixed(1) + ' KB';
+      document.getElementById('logoPreviewWrap').classList.add('visible');
+      document.getElementById('logoSettingsSection').style.display = '';
+      scheduleRender();
+      showToast('Logo uploaded!', 'success');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeLogo() {
+  state.logoImg = null;
+  state.builtinIcon = null;
+  document.querySelectorAll('.icon-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('logoPreviewWrap').classList.remove('visible');
+  document.getElementById('logoSettingsSection').style.display = 'none';
+  document.getElementById('logoFile').value = '';
+  scheduleRender();
+  showToast('Logo removed.', 'info');
+}
+
+function clearBuiltinIcon() {
+  state.logoImg = null;
+  state.builtinIcon = null;
+  document.querySelectorAll('.icon-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('logoSettingsSection').style.display = 'none';
+  scheduleRender();
+}
+
+// =========================================
+// DOWNLOAD / EXPORT
+// =========================================
+function downloadPNG() {
+  const canvas = document.getElementById('qrCanvas');
+  if (!canvas.width) return;
+  const link = document.createElement('a');
+  link.download = 'qrforge-' + Date.now() + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  showToast('PNG downloaded!', 'success');
+  playClickSound();
+}
+
+function downloadSVG() {
+  if (!state.content) return;
+  try {
+    const qr = qrcode(0, state.errorLevel);
+    qr.addData(state.content);
+    qr.make();
+    const moduleCount = qr.getModuleCount();
+    const margin = state.margin;
+    const totalMods = moduleCount + margin * 2;
+    const cell = 10;
+    const size = totalMods * cell;
+    let svgParts = [`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">`];
+    if (state.bgColor && state.bgColor !== 'transparent') {
+      svgParts.push(`<rect width="${size}" height="${size}" fill="${state.bgColor}"/>`);
+    }
+    if (state.gradientEnabled) {
+      const id = 'qrg';
+      if (state.gradientType === 'radial') {
+        svgParts.push(`<defs><radialGradient id="${id}" cx="50%" cy="50%" r="65%"><stop offset="0%" stop-color="${state.gradientColor1}"/><stop offset="100%" stop-color="${state.gradientColor2}"/></radialGradient></defs>`);
+      } else {
+        const [x2,y2] = state.gradientType==='linear' ? ['100%','100%'] : state.gradientType==='linear-h' ? ['100%','0%'] : ['0%','100%'];
+        svgParts.push(`<defs><linearGradient id="${id}" x1="0%" y1="0%" x2="${x2}" y2="${y2}"><stop offset="0%" stop-color="${state.gradientColor1}"/><stop offset="100%" stop-color="${state.gradientColor2}"/></linearGradient></defs>`);
+      }
+      svgParts.push(`<g fill="url(#${id})">`);
+    } else {
+      svgParts.push(`<g fill="${state.dotColor}">`);
+    }
+    for (let r = 0; r < moduleCount; r++) {
+      for (let c = 0; c < moduleCount; c++) {
+        if (!qr.isDark(r, c)) continue;
+        const x = (c + margin) * cell, y = (r + margin) * cell;
+        svgParts.push(svgDot(x, y, cell, state.dotStyle, state.dotPadding));
+      }
+    }
+    svgParts.push('</g></svg>');
+    const blob = new Blob([svgParts.join('')], { type: 'image/svg+xml' });
+    const link = document.createElement('a');
+    link.download = 'qrforge-' + Date.now() + '.svg';
+    link.href = URL.createObjectURL(blob);
+    link.click();
+    showToast('SVG downloaded!', 'success');
+    playClickSound();
+  } catch(e) {
+    showToast('SVG export failed.', 'error');
+  }
+}
+
+function svgDot(x, y, size, style, padding) {
+  const pad = size * padding;
+  const px = x + pad/2, py = y + pad/2, ps = size - pad;
+  switch(style) {
+    case 'dots':    return `<circle cx="${x+size/2}" cy="${y+size/2}" r="${ps/2}"/>`;
+    case 'rounded': return `<rect x="${px}" y="${py}" width="${ps}" height="${ps}" rx="${ps*0.28}"/>`;
+    case 'extra-rounded': return `<rect x="${px}" y="${py}" width="${ps}" height="${ps}" rx="${ps*0.45}"/>`;
+    default: return `<rect x="${px}" y="${py}" width="${ps}" height="${ps}"/>`;
+  }
+}
+
+function copyToClipboard() {
+  const canvas = document.getElementById('qrCanvas');
+  canvas.toBlob(blob => {
+    try {
+      const item = new ClipboardItem({'image/png': blob});
+      navigator.clipboard.write([item]).then(() => {
+        const overlay = document.getElementById('copyOverlay');
+        overlay.classList.add('show');
+        setTimeout(() => overlay.classList.remove('show'), 1200);
+        showToast('Copied to clipboard!', 'success');
+        playClickSound();
+      });
+    } catch(e) {
+      showToast('Copy not supported in this browser.', 'error');
+    }
+  });
+}
+
+// =========================================
+// SOUND EFFECTS (Web Audio API)
+// =========================================
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playSuccessSound() {
+  if (!state.soundEnabled) return;
+  try {
+    const ctx = getAudioCtx();
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const t = ctx.currentTime + i * 0.07;
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.12, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      osc.start(t); osc.stop(t + 0.25);
+    });
+  } catch(e) {}
+}
+
+function playClickSound() {
+  if (!state.soundEnabled) return;
+  try {
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = 'sine'; osc.frequency.value = 880;
+    const t = ctx.currentTime;
+    gain.gain.setValueAtTime(0.06, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+    osc.start(t); osc.stop(t + 0.08);
+  } catch(e) {}
+}
+
+function toggleSound() {
+  state.soundEnabled = !state.soundEnabled;
+  const btn = document.getElementById('btnSound');
+  btn.innerHTML = state.soundEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-xmark"></i>';
+  btn.style.color = state.soundEnabled ? '' : 'var(--txt3)';
+  if (state.soundEnabled) playClickSound();
+}
+
+// =========================================
+// TOAST
+// =========================================
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  const icons = { success:'fa-check-circle', error:'fa-times-circle', info:'fa-info-circle' };
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<i class="fas ${icons[type]||'fa-info-circle'}"></i><span>${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.classList.add('removing');
+    toast.addEventListener('animationend', () => toast.remove(), {once:true});
+  }, 2800);
+}
+
+function scrollToTop() { window.scrollTo({top:0,behavior:'smooth'}); }
+
+// =========================================
+// KEYBOARD SHORTCUT: Ctrl+Enter = Generate
+// =========================================
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    generateQR();
+  }
+});
+
+// Tooltip for generate button
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('btnGenerate').title = 'Generate QR (Ctrl+Enter)';
+});
+</script>
+</body>
+</html>
