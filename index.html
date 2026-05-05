@@ -21,14 +21,13 @@
   --shadow:0 8px 60px rgba(0,0,0,0.7);
   --font-head:'Syne',sans-serif;--font-body:'Outfit',sans-serif;--font-mono:'JetBrains Mono',monospace;
   --trans:all 0.22s cubic-bezier(.4,0,.2,1);
+  --primary-dim: rgba(0,217,245,0.08);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;font-size:15px}
 body{background:var(--bg);color:var(--txt);font-family:var(--font-body);min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(0,217,245,0.08),transparent),radial-gradient(ellipse 60% 40% at 90% 80%,rgba(255,45,120,0.06),transparent);pointer-events:none;z-index:0}
-/* Grain overlay */
 body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
-/* ===HEADER=== */
 header{position:sticky;top:0;z-index:100;padding:0 24px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(7,7,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--cyan),var(--pink));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;box-shadow:0 0 20px rgba(0,217,245,0.3)}
@@ -37,7 +36,6 @@ header{position:sticky;top:0;z-index:100;padding:0 24px;height:64px;display:flex
 nav{display:flex;gap:6px;align-items:center}
 .nav-btn{background:none;border:1px solid var(--border);color:var(--txt2);padding:6px 14px;border-radius:var(--radius-xs);font-family:var(--font-body);font-size:.8rem;cursor:pointer;transition:var(--trans)}
 .nav-btn:hover{border-color:var(--border2);color:var(--cyan);background:var(--primary-dim)}
-/* ===HERO=== */
 .hero{text-align:center;padding:52px 24px 36px;position:relative;z-index:1}
 .hero h1{font-family:var(--font-head);font-size:clamp(2rem,5vw,3.4rem);font-weight:800;line-height:1.1;letter-spacing:-1.5px;margin-bottom:12px}
 .hero h1 span{background:linear-gradient(90deg,var(--cyan),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -45,16 +43,13 @@ nav{display:flex;gap:6px;align-items:center}
 .features-row{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-bottom:8px}
 .feat-pill{display:flex;align-items:center;gap:5px;background:var(--glass);border:1px solid var(--border);padding:5px 12px;border-radius:99px;font-size:.75rem;color:var(--txt2)}
 .feat-pill i{color:var(--cyan);font-size:.7rem}
-/* ===MAIN LAYOUT=== */
 .app{display:grid;grid-template-columns:1fr 380px;gap:20px;max-width:1280px;margin:0 auto;padding:0 20px 60px;position:relative;z-index:1}
 @media(max-width:960px){.app{grid-template-columns:1fr}}
-/* ===PANEL=== */
 .panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;position:relative}
 .panel-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
 .panel-header i{color:var(--cyan);font-size:.95rem}
 .panel-header h3{font-family:var(--font-head);font-size:.9rem;font-weight:700;letter-spacing:-.3px}
 .panel-body{padding:20px}
-/* ===TYPE SELECTOR=== */
 .type-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;margin-bottom:4px}
 .type-btn{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 6px 8px;cursor:pointer;transition:var(--trans);text-align:center;position:relative;overflow:hidden}
 .type-btn:hover{border-color:rgba(0,217,245,0.2);background:rgba(0,217,245,0.04)}
@@ -63,7 +58,6 @@ nav{display:flex;gap:6px;align-items:center}
 .type-btn.active i{color:var(--cyan)}
 .type-btn span{font-size:.67rem;color:var(--txt3);font-weight:500;display:block;line-height:1.2}
 .type-btn.active span{color:var(--txt2)}
-/* ===TABS=== */
 .tabs{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
 .tab-btn{flex-shrink:0;padding:12px 18px;background:none;border:none;color:var(--txt3);font-family:var(--font-body);font-size:.8rem;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:var(--trans);display:flex;align-items:center;gap:6px}
@@ -73,7 +67,6 @@ nav{display:flex;gap:6px;align-items:center}
 .tab-pane{display:none;padding:20px}
 .tab-pane.active{display:block;animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-/* ===FORM=== */
 .form-group{margin-bottom:14px}
 .form-group label{display:block;font-size:.75rem;font-weight:600;color:var(--txt2);margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase}
 .form-group input,.form-group textarea,.form-group select{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--txt);font-family:var(--font-body);font-size:.87rem;padding:10px 12px;transition:var(--trans);outline:none;resize:vertical}
@@ -81,7 +74,6 @@ nav{display:flex;gap:6px;align-items:center}
 .form-group select option{background:var(--bg3);color:var(--txt)}
 .form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--cyan2);box-shadow:0 0 0 3px rgba(0,217,245,0.08)}
 .char-count{font-size:.7rem;color:var(--txt3);text-align:right;margin-top:3px;font-family:var(--font-mono)}
-/* ===STYLE OPTIONS=== */
 .style-section{margin-bottom:22px}
 .style-section h4{font-size:.72rem;font-weight:700;color:var(--txt3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
 .dot-grid{display:flex;flex-wrap:wrap;gap:8px}
@@ -91,7 +83,6 @@ nav{display:flex;gap:6px;align-items:center}
 .dot-preview{width:42px;height:42px;display:flex;align-items:center;justify-content:center}
 .dot-opt span{font-size:.62rem;color:var(--txt3);text-align:center;line-height:1.3}
 .dot-opt.active span{color:var(--cyan)}
-/* Color row */
 .color-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .color-swatch{width:32px;height:32px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:var(--trans);position:relative;overflow:hidden;flex-shrink:0}
 .color-swatch.selected{border-color:#fff;box-shadow:0 0 12px rgba(255,255,255,0.3)}
@@ -100,7 +91,6 @@ nav{display:flex;gap:6px;align-items:center}
 .color-swatch.custom-swatch i{font-size:.8rem;color:var(--txt2)}
 .color-label{font-size:.72rem;color:var(--txt3)}
 .hidden-input{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer;inset:0}
-/* Gradient */
 .gradient-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .toggle-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .toggle-label{font-size:.78rem;color:var(--txt2);font-weight:500}
@@ -110,16 +100,13 @@ nav{display:flex;gap:6px;align-items:center}
 .toggle-slider:before{content:'';position:absolute;height:16px;width:16px;left:2px;top:2px;background:var(--txt3);border-radius:50%;transition:.3s}
 .toggle input:checked+.toggle-slider{background:linear-gradient(90deg,var(--cyan2),var(--cyan));border-color:var(--cyan)}
 .toggle input:checked+.toggle-slider:before{transform:translateX(18px);background:#fff}
-/* Gradient type select */
 .grad-type-row{display:flex;gap:6px;margin-bottom:10px}
 .grad-type-btn{flex:1;padding:6px;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--txt3);font-size:.72rem;cursor:pointer;transition:var(--trans);font-family:var(--font-body)}
 .grad-type-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,217,245,0.07)}
-/* Range slider */
 .range-group{display:flex;align-items:center;gap:10px}
 .range-group input[type=range]{flex:1;-webkit-appearance:none;height:4px;background:var(--bg4);border-radius:99px;outline:none;cursor:pointer}
 .range-group input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--cyan);cursor:pointer;box-shadow:0 0 8px rgba(0,217,245,0.4)}
 .range-val{font-family:var(--font-mono);font-size:.75rem;color:var(--cyan);min-width:36px;text-align:right}
-/* Logo area */
 .logo-drop{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:24px;text-align:center;cursor:pointer;transition:var(--trans);position:relative;overflow:hidden;background:var(--glass)}
 .logo-drop:hover,.logo-drop.drag-over{border-color:var(--cyan2);background:rgba(0,217,245,0.04)}
 .logo-drop-icon{font-size:2rem;color:var(--txt3);margin-bottom:8px}
@@ -134,14 +121,12 @@ nav{display:flex;gap:6px;align-items:center}
 .logo-preview-info span{font-size:.72rem;color:var(--txt3)}
 .remove-logo-btn{background:none;border:none;color:var(--pink);cursor:pointer;padding:4px;font-size:.95rem;transition:var(--trans)}
 .remove-logo-btn:hover{color:#ff6b9d}
-/* Builtin icons */
 .icon-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:12px}
 .icon-btn{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-xs);padding:8px;cursor:pointer;transition:var(--trans);text-align:center}
 .icon-btn:hover,.icon-btn.active{border-color:var(--cyan);background:rgba(0,217,245,0.07)}
 .icon-btn i{display:block;font-size:1.1rem;color:var(--txt2);transition:var(--trans)}
 .icon-btn.active i,.icon-btn:hover i{color:var(--cyan)}
 .icon-btn span{font-size:.6rem;color:var(--txt3);display:block;margin-top:2px}
-/* Settings */
 .setting-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
 .setting-row:last-child{border-bottom:none}
 .setting-info{flex:1}
@@ -150,7 +135,6 @@ nav{display:flex;gap:6px;align-items:center}
 .ec-btns{display:flex;gap:4px}
 .ec-btn{padding:4px 10px;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--txt3);font-size:.72rem;cursor:pointer;transition:var(--trans);font-family:var(--font-mono)}
 .ec-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,217,245,0.07)}
-/* ===PREVIEW PANEL=== */
 .preview-panel{position:sticky;top:80px;height:fit-content}
 .qr-canvas-wrap{padding:24px;display:flex;justify-content:center;background:var(--bg2);position:relative}
 .qr-canvas-wrap canvas{border-radius:var(--radius-sm);transition:all .35s cubic-bezier(.34,1.56,.64,1);max-width:100%;display:block}
@@ -159,7 +143,6 @@ nav{display:flex;gap:6px;align-items:center}
 .qr-empty p{font-size:.8rem;color:var(--txt3);text-align:center}
 .qr-pulse{animation:qrPulse .6s cubic-bezier(.34,1.56,.64,1)}
 @keyframes qrPulse{0%{transform:scale(.85);opacity:.5}60%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
-/* Actions */
 .actions{padding:16px 20px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
 .btn-generate{width:100%;padding:13px;background:linear-gradient(135deg,var(--cyan2),var(--cyan));color:#000;font-family:var(--font-head);font-size:.95rem;font-weight:700;border:none;border-radius:var(--radius-sm);cursor:pointer;transition:var(--trans);display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-.2px}
 .btn-generate:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(0,217,245,0.35)}
@@ -170,12 +153,10 @@ nav{display:flex;gap:6px;align-items:center}
 .btn-dl{padding:9px 6px;background:var(--glass2);border:1px solid var(--border);border-radius:var(--radius-xs);color:var(--txt2);font-family:var(--font-body);font-size:.75rem;font-weight:500;cursor:pointer;transition:var(--trans);display:flex;align-items:center;justify-content:center;gap:5px}
 .btn-dl:hover{border-color:var(--border2);color:var(--cyan);background:rgba(0,217,245,0.07);transform:translateY(-1px)}
 .btn-dl:disabled{opacity:.35;cursor:not-allowed;transform:none}
-/* QR Info */
 .qr-info{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:16px}
 .qr-stat{flex:1;text-align:center}
 .qr-stat label{display:block;font-size:.65rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
 .qr-stat span{font-family:var(--font-mono);font-size:.78rem;color:var(--cyan)}
-/* ===TOAST=== */
 .toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
 .toast{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;display:flex;align-items:center;gap:10px;font-size:.82rem;min-width:200px;animation:toastIn .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 40px rgba(0,0,0,.5);pointer-events:all}
 .toast.success{border-color:rgba(0,229,160,.3)}
@@ -186,42 +167,33 @@ nav{display:flex;gap:6px;align-items:center}
 @keyframes toastIn{from{opacity:0;transform:translateX(20px) scale(.95)}to{opacity:1;transform:translateX(0) scale(1)}}
 .toast.removing{animation:toastOut .25s ease forwards}
 @keyframes toastOut{to{opacity:0;transform:translateX(20px) scale(.95)}}
-/* ===FOOTER=== */
 footer{text-align:center;padding:32px 20px;border-top:1px solid var(--border);position:relative;z-index:1}
 footer p{font-size:.8rem;color:var(--txt3)}
 footer a{color:var(--cyan);text-decoration:none}
-/* ===SCROLLBAR=== */
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:99px}
 ::-webkit-scrollbar-thumb:hover{background:var(--bg3)}
-/* ===RESPONSIVE=== */
 @media(max-width:640px){
   .type-grid{grid-template-columns:repeat(4,1fr)}
   .hero h1{font-size:1.8rem}
   .app{padding:0 12px 40px}
   nav .nav-btn{display:none}
 }
-/* Theme presets */
 .color-presets{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
 .preset-btn{width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:var(--trans);position:relative}
 .preset-btn.selected{border-color:#fff;transform:scale(1.1)}
 .preset-btn:hover{transform:scale(1.1)}
-/* Copy overlay */
 .copy-overlay{position:absolute;inset:0;background:rgba(0,217,245,0.1);display:flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);opacity:0;pointer-events:none;transition:opacity .3s}
 .copy-overlay.show{opacity:1}
 .copy-overlay i{font-size:2rem;color:var(--cyan)}
-/* Live indicator */
 .live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px;animation:livePulse 2s infinite}
 @keyframes livePulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,229,160,.4)}50%{box-shadow:0 0 0 5px rgba(0,229,160,0)}}
-/* Section label */
 .section-label{display:flex;align-items:center;gap:6px;margin-bottom:16px}
 .section-label h2{font-family:var(--font-head);font-size:.85rem;color:var(--txt2);font-weight:700;letter-spacing:.4px;text-transform:uppercase}
 .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
-/* Tooltip */
 [data-tip]{position:relative;cursor:help}
 [data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border);color:var(--txt);font-size:.7rem;padding:5px 9px;border-radius:6px;white-space:nowrap;z-index:100;pointer-events:none;font-family:var(--font-body)}
-/* QR frame */
 .qr-frame-selector{display:flex;gap:6px}
 .frame-opt{cursor:pointer;padding:6px 10px;background:var(--glass);border:1px solid var(--border);border-radius:var(--radius-xs);font-size:.72rem;color:var(--txt3);transition:var(--trans)}
 .frame-opt.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,217,245,.07)}
@@ -229,13 +201,10 @@ footer a{color:var(--cyan);text-decoration:none}
 </head>
 <body>
 
-<!-- HEADER -->
 <header>
   <a class="logo" href="#">
     <div class="logo-icon"><i class="fas fa-qrcode"></i></div>
-    <div>
-      <div class="logo-text">QRForge</div>
-    </div>
+    <div><div class="logo-text">QRForge</div></div>
     <span class="logo-badge">FREE</span>
   </a>
   <nav>
@@ -244,7 +213,6 @@ footer a{color:var(--cyan);text-decoration:none}
   </nav>
 </header>
 
-<!-- HERO -->
 <section class="hero">
   <h1>Create <span>Professional</span><br>QR Codes — Free</h1>
   <p>Full customization, 14 content types, custom logos, gradients, and unique dot styles. No watermarks, no limits.</p>
@@ -258,13 +226,8 @@ footer a{color:var(--cyan);text-decoration:none}
   </div>
 </section>
 
-<!-- MAIN APP -->
 <main class="app">
-
-  <!-- LEFT COLUMN -->
   <div style="display:flex;flex-direction:column;gap:16px">
-
-    <!-- STEP 1: Type -->
     <div class="panel">
       <div class="panel-header">
         <i class="fas fa-list-ul"></i>
@@ -274,8 +237,6 @@ footer a{color:var(--cyan);text-decoration:none}
         <div class="type-grid" id="typeGrid"></div>
       </div>
     </div>
-
-    <!-- STEP 2: Content + Customize -->
     <div class="panel">
       <div class="panel-header">
         <i class="fas fa-pen-to-square"></i>
@@ -287,26 +248,19 @@ footer a{color:var(--cyan);text-decoration:none}
         <button class="tab-btn" data-tab="logo"><i class="fas fa-image"></i> Logo</button>
         <button class="tab-btn" data-tab="settings"><i class="fas fa-sliders"></i> Settings</button>
       </div>
-
-      <!-- CONTENT TAB -->
       <div class="tab-pane active" id="tab-content">
         <div id="dynamicFields"></div>
         <div class="char-count" id="charCount">0 characters</div>
       </div>
-
-      <!-- STYLE TAB -->
       <div class="tab-pane" id="tab-style">
-        <!-- Dot Shape -->
         <div class="style-section">
           <h4>Dot Shape</h4>
           <div class="dot-grid" id="dotStyleGrid"></div>
         </div>
-        <!-- Corner Shape -->
         <div class="style-section">
           <h4>Corner Shape</h4>
           <div class="dot-grid" id="cornerStyleGrid"></div>
         </div>
-        <!-- Dot Color -->
         <div class="style-section">
           <h4>Dot Color</h4>
           <div class="color-presets" id="dotColorPresets"></div>
@@ -318,7 +272,6 @@ footer a{color:var(--cyan);text-decoration:none}
             <span class="color-label">Custom</span>
           </div>
         </div>
-        <!-- Background Color -->
         <div class="style-section">
           <h4>Background Color</h4>
           <div class="color-presets" id="bgColorPresets"></div>
@@ -331,7 +284,6 @@ footer a{color:var(--cyan);text-decoration:none}
             <span class="color-label">Custom</span>
           </div>
         </div>
-        <!-- Gradient -->
         <div class="style-section">
           <div class="toggle-row">
             <span class="toggle-label"><i class="fas fa-wand-magic-sparkles" style="color:var(--cyan);margin-right:6px"></i>Gradient Dots</span>
@@ -351,8 +303,6 @@ footer a{color:var(--cyan);text-decoration:none}
           </div>
         </div>
       </div>
-
-      <!-- LOGO TAB -->
       <div class="tab-pane" id="tab-logo">
         <div class="style-section">
           <h4>Built-in Icons</h4>
@@ -392,8 +342,6 @@ footer a{color:var(--cyan);text-decoration:none}
           </div>
         </div>
       </div>
-
-      <!-- SETTINGS TAB -->
       <div class="tab-pane" id="tab-settings">
         <div class="setting-row">
           <div class="setting-info"><p>Error Correction</p><span>Higher = more resilient (use H with logo)</span></div>
@@ -430,11 +378,8 @@ footer a{color:var(--cyan);text-decoration:none}
           <label class="toggle"><input type="checkbox" id="autoRegen" checked><span class="toggle-slider"></span></label>
         </div>
       </div>
-
-    </div><!-- end panel -->
+    </div>
   </div>
-
-  <!-- RIGHT COLUMN: PREVIEW -->
   <div class="panel preview-panel">
     <div class="panel-header">
       <i class="fas fa-eye"></i>
@@ -465,16 +410,13 @@ footer a{color:var(--cyan);text-decoration:none}
       </div>
     </div>
   </div>
-
 </main>
 
-<!-- FOOTER -->
 <footer>
   <p>QRForge — 100% Free &amp; Open · No Watermarks · No Registration · <a href="#">Privacy Policy</a></p>
   <p style="margin-top:6px;font-size:.72rem">All QR codes are generated locally in your browser. No data is sent to any server.</p>
 </footer>
 
-<!-- TOAST CONTAINER -->
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
@@ -483,7 +425,7 @@ footer a{color:var(--cyan);text-decoration:none}
 // =========================================
 const state = {
   qrType: 'url',
-  errorLevel: 'M',
+  errorLevel: 'H',  // Changed default to H for better scannability
   size: 600,
   margin: 4,
   dotPadding: 0.15,
@@ -502,7 +444,8 @@ const state = {
   builtinIcon: null,
   generated: false,
   soundEnabled: true,
-  renderTimeout: null
+  renderTimeout: null,
+  content: null
 };
 
 // =========================================
@@ -526,22 +469,22 @@ const QR_TYPES = {
 };
 
 // =========================================
-// DOT STYLES CONFIG
+// DOT STYLES CONFIG (only safe styles recommended for scannability)
 // =========================================
 const DOT_STYLES = [
   { id:'square', label:'Square', svg:'<rect x="5" y="5" width="12" height="12"/>'},
   { id:'rounded', label:'Rounded', svg:'<rect x="5" y="5" width="12" height="12" rx="3"/>'},
   { id:'dots', label:'Dots', svg:'<circle cx="11" cy="11" r="6"/>'},
   { id:'extra-rounded', label:'Extra Round', svg:'<rect x="5" y="5" width="12" height="12" rx="5"/>'},
-  { id:'classy', label:'Diamond', svg:'<rect x="11" y="5" width="9" height="9" rx="1" transform="rotate(45 11 11)"/>'},
-  { id:'connected', label:'Connected', svg:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="12" y="3" width="7" height="7" rx="2"/><rect x="3" y="12" width="7" height="7" rx="2"/><rect x="12" y="12" width="7" height="7" rx="2"/>'},
-  { id:'star', label:'Star', svg:'<polygon points="11,4 12.9,9.2 18.5,9.2 14,12.2 15.8,17.3 11,14.2 6.2,17.3 8,12.2 3.5,9.2 9.1,9.2"/>'}
+  { id:'classy', label:'Diamond (less scan)', svg:'<rect x="11" y="5" width="9" height="9" rx="1" transform="rotate(45 11 11)"/>', warning:true },
+  { id:'connected', label:'Connected (less scan)', svg:'<rect x="3" y="3" width="7" height="7" rx="2"/><rect x="12" y="3" width="7" height="7" rx="2"/><rect x="3" y="12" width="7" height="7" rx="2"/><rect x="12" y="12" width="7" height="7" rx="2"/>', warning:true },
+  { id:'star', label:'Star (less scan)', svg:'<polygon points="11,4 12.9,9.2 18.5,9.2 14,12.2 15.8,17.3 11,14.2 6.2,17.3 8,12.2 3.5,9.2 9.1,9.2"/>', warning:true }
 ];
 
 const CORNER_STYLES = [
   { id:'square', label:'Square', svg:'<rect x="3" y="3" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"/><rect x="7" y="7" width="8" height="8"/>'},
-  { id:'rounded', label:'Rounded', svg:'<rect x="3" y="3" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><rect x="7" y="7" width="8" height="8" rx="2"/>'},
-  { id:'dot', label:'Dot', svg:'<rect x="3" y="3" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="11" cy="11" r="4"/>'}
+  { id:'rounded', label:'Rounded (less scan)', svg:'<rect x="3" y="3" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><rect x="7" y="7" width="8" height="8" rx="2"/>', warning:true },
+  { id:'dot', label:'Dot (less scan)', svg:'<rect x="3" y="3" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="11" cy="11" r="4"/>', warning:true }
 ];
 
 // =========================================
@@ -550,9 +493,6 @@ const CORNER_STYLES = [
 const DOT_PRESETS = ['#000000','#1a1a2e','#0f3460','#16213e','#e94560','#533483','#2b2d42','#1b4332','#7b2d8b','#d62828'];
 const BG_PRESETS  = ['#ffffff','#f8f9fa','#fff3e0','#e8f5e9','#e3f2fd','#fce4ec','#f3e5f5','#fffde7','#e0f7fa','#fafafa'];
 
-// =========================================
-// BUILTIN ICONS
-// =========================================
 const BUILTIN_ICONS = [
   {id:'whatsapp', icon:'fa-whatsapp', fa:'fab', label:'WhatsApp', svg:null},
   {id:'instagram', icon:'fa-instagram', fa:'fab', label:'Instagram', svg:null},
@@ -583,8 +523,10 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTypeFields('url');
   setupTabs();
   setupDragDrop();
-  document.getElementById('dotColorPicker').addEventListener('input', e => { state.dotColor = e.target.value; scheduleRender(); });
+  document.getElementById('dotColorPicker').addEventListener('input', e => { state.dotColor = e.target.value; document.querySelectorAll('#dotColorPresets .preset-btn').forEach(b=>b.classList.remove('selected')); scheduleRender(); });
   document.getElementById('bgColorPicker').addEventListener('input', e => { state.bgColor = e.target.value; document.querySelectorAll('#bgColorPresets .preset-btn').forEach(b=>b.classList.remove('selected')); document.getElementById('bgTransparent').classList.remove('selected'); scheduleRender(); });
+  // Set default EC to H for better scannability
+  setEC(document.querySelector('.ec-btn[data-ec="H"]'), 'H');
 });
 
 function buildTypeGrid() {
@@ -610,6 +552,7 @@ function buildDotStyleGrid() {
       document.querySelectorAll('.dot-opt[data-style]').forEach(b=>b.classList.remove('active'));
       el.classList.add('active');
       state.dotStyle = ds.id;
+      if (ds.warning) showToast('This dot style may reduce scannability. Use with caution.', 'info');
       scheduleRender();
     };
     grid.appendChild(el);
@@ -627,6 +570,7 @@ function buildCornerStyleGrid() {
       document.querySelectorAll('.dot-opt[data-corner]').forEach(b=>b.classList.remove('active'));
       el.classList.add('active');
       state.cornerStyle = cs.id;
+      if (cs.warning) showToast('Non-square corners may cause scanning issues. Stick to Square for best results.', 'info');
       scheduleRender();
     };
     grid.appendChild(el);
@@ -683,7 +627,6 @@ function selectBuiltinIcon(id, el) {
   document.querySelectorAll('.icon-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
   state.builtinIcon = id;
-  // Generate icon on canvas as logo
   generateIconCanvas(id);
   document.getElementById('logoSettingsSection').style.display = '';
   scheduleRender();
@@ -692,27 +635,14 @@ function selectBuiltinIcon(id, el) {
 function generateIconCanvas(iconId) {
   const icon = BUILTIN_ICONS.find(i=>i.id===iconId);
   if (!icon) return;
-  // Create temp canvas with icon
   const size = 200;
-  const c = document.createElement('canvas');
-  c.width = size; c.height = size;
-  const ctx = c.getContext('2d');
-  // Draw colored circle background
   const colors = {
     whatsapp:'#25D366', instagram:'#E1306C', twitter:'#000000', youtube:'#FF0000',
     telegram:'#0088cc', facebook:'#1877F2', linkedin:'#0A66C2', tiktok:'#000000',
     github:'#333333', globe:'#0066cc', envelope:'#ea4335', phone:'#34a853',
     wifi:'#007aff', bitcoin:'#F7931A', location:'#FF4444'
   };
-  ctx.fillStyle = colors[iconId] || '#333';
-  roundRectCtx(ctx, 0, 0, size, size, size*0.22, colors[iconId]||'#333');
-  // Draw FA icon as text using unicode
-  const faMap = {
-    whatsapp:'', instagram:'', twitter:'𝕏', youtube:'', telegram:'',
-    facebook:'', linkedin:'', tiktok:'', github:'', globe:'',
-    envelope:'', phone:'', wifi:'', bitcoin:'', location:''
-  };
-  // Use a data URL approach with an img + fontawesome - simpler approach: use SVG
+  const bgColor = colors[iconId] || '#333';
   const svgMap = {
     whatsapp:`<path fill="white" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>`,
     instagram:`<path fill="white" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>`,
@@ -729,8 +659,6 @@ function generateIconCanvas(iconId) {
     github:`<path fill="white" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>`,
     telegram:`<path fill="white" d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>`
   };
-  // Create an image with SVG
-  const bgColor = (colors[iconId] || '#333');
   const svgContent = svgMap[iconId] || `<circle cx="12" cy="12" r="10" fill="white"/>`;
   const svgStr = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="200" height="200"><rect width="24" height="24" rx="5" fill="${bgColor}"/>${svgContent}</svg>`;
   const img = new Image();
@@ -738,7 +666,8 @@ function generateIconCanvas(iconId) {
     state.logoImg = img;
     scheduleRender();
   };
-  img.src = 'data:image/svg+xml;base64,' + btoa(svgStr);
+  // Fix btoa issue with unicode
+  img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgStr)));
 }
 
 function setupTabs() {
@@ -765,15 +694,19 @@ function setupDragDrop() {
   });
 }
 
-// =========================================
-// TYPE SELECTION
-// =========================================
 function selectType(id) {
   state.qrType = id;
   document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === id));
   renderTypeFields(id);
-  scheduleRender();
+  // Reset generated flag and clear previous QR
+  state.generated = false;
+  state.content = null;
+  document.getElementById('qrEmpty').style.display = 'flex';
+  document.getElementById('qrCanvas').style.display = 'none';
+  document.getElementById('qrInfo').style.display = 'none';
   playClickSound();
+  // Auto-generate if auto-regen is on
+  if (document.getElementById('autoRegen').checked) scheduleRender();
 }
 
 function renderTypeFields(type) {
@@ -853,7 +786,7 @@ function buildQRContent(type, vals) {
       ].filter(Boolean).join('\n');
     }
     case 'whatsapp': {
-      const num = g('phone').replace(/\D/g,'');
+      let num = g('phone').replace(/[^\d+]/g, '');
       return `https://wa.me/${num}` + (g('message') ? `?text=${encodeURIComponent(g('message'))}` : '');
     }
     case 'telegram':  return 'https://t.me/' + g('user').replace('@','');
@@ -878,13 +811,26 @@ function updateCharCount() {
   document.getElementById('charCount').textContent = content.length + ' characters';
 }
 
-// =========================================
-// QR GENERATION + RENDERING
-// =========================================
 function scheduleRender() {
-  if (!state.generated) return;
   clearTimeout(state.renderTimeout);
-  state.renderTimeout = setTimeout(doRender, 150);
+  state.renderTimeout = setTimeout(() => {
+    if (document.getElementById('autoRegen').checked) {
+      const vals = getFieldValues();
+      const content = buildQRContent(state.qrType, vals);
+      if (content && content.length > 0) {
+        state.content = content;
+        doRender();
+      } else if (state.generated) {
+        // clear preview if empty
+        document.getElementById('qrEmpty').style.display = 'flex';
+        document.getElementById('qrCanvas').style.display = 'none';
+        document.getElementById('qrInfo').style.display = 'none';
+        state.generated = false;
+      }
+    } else if (state.generated) {
+      doRender();
+    }
+  }, 150);
 }
 
 function generateQR() {
@@ -915,13 +861,11 @@ function doRender() {
     canvas.classList.remove('qr-pulse');
     void canvas.offsetWidth;
     canvas.classList.add('qr-pulse');
-    // Update stats
     document.getElementById('qrInfo').style.display = 'flex';
     document.getElementById('statModules').textContent = moduleCount + 'x' + moduleCount;
     document.getElementById('statVersion').textContent = Math.round((moduleCount-17)/4);
     document.getElementById('statEC').textContent = state.errorLevel;
     document.getElementById('statChars').textContent = state.content.length;
-    // Enable download buttons
     ['btnPNG','btnSVG','btnCopy'].forEach(id => document.getElementById(id).disabled = false);
   } catch(e) {
     showToast('Error: Content too large or invalid.', 'error');
@@ -929,9 +873,6 @@ function doRender() {
   }
 }
 
-// =========================================
-// CANVAS RENDERER
-// =========================================
 function renderQRCanvas(canvas, qr, moduleCount) {
   const size = state.size;
   const margin = state.margin;
@@ -968,13 +909,12 @@ function renderQRCanvas(canvas, qr, moduleCount) {
     fill = state.dotColor;
   }
   const bgFill = (state.bgColor && state.bgColor !== 'transparent') ? state.bgColor : '#ffffff';
-  // Draw finder patterns
+  // Draw finder patterns (only square style for compatibility, but we'll draw according to user choice)
   const finderPositions = [{r:0,c:0},{r:0,c:moduleCount-7},{r:moduleCount-7,c:0}];
   finderPositions.forEach(({r: fr, c: fc}) => {
     drawFinder(ctx, (fc+margin)*cell, (fr+margin)*cell, cell, fill, bgFill, state.cornerStyle);
   });
   // Draw data modules
-  ctx.fillStyle = fill;
   for (let r = 0; r < moduleCount; r++) {
     for (let c = 0; c < moduleCount; c++) {
       if (!matrix[r][c]) continue;
@@ -991,7 +931,9 @@ function renderQRCanvas(canvas, qr, moduleCount) {
   }
 }
 
+// Fixed isFinderZone - correctly excludes only the finder pattern areas that we already drew
 function isFinderZone(r, c, n) {
+  // Finder patterns are 7x7 at corners. We already drew them manually, so skip those cells.
   if (r < 7 && c < 7) return true;
   if (r < 7 && c >= n-7) return true;
   if (r >= n-7 && c < 7) return true;
@@ -1002,29 +944,41 @@ function drawFinder(ctx, x, y, cell, fill, bgFill, style) {
   const s7 = cell * 7;
   const s5 = cell * 5;
   const s3 = cell * 3;
-  if (style === 'square') {
+  // Always draw the outer square with high contrast for scannability
+  // We'll use a safe approach: draw a standard finder pattern but with style applied to inner area only
+  if (style === 'square' || style === 'rounded' || style === 'dot') {
+    // Outer border: fill
     ctx.fillStyle = fill;
-    // Outer border
     ctx.fillRect(x, y, s7, cell);
     ctx.fillRect(x, y+s7-cell, s7, cell);
     ctx.fillRect(x, y+cell, cell, s5);
     ctx.fillRect(x+s7-cell, y+cell, cell, s5);
     // Inner 3x3
+    ctx.fillStyle = fill;
     ctx.fillRect(x+2*cell, y+2*cell, s3, s3);
-  } else if (style === 'rounded') {
-    const rr = cell*1.4;
+    // For rounded/dot, we add rounded corners after but keep square base for scannability
+    if (style === 'rounded') {
+      // Overlay rounded corners for aesthetics but keep functionality
+      ctx.fillStyle = bgFill;
+      roundRectCtx(ctx, x+cell, y+cell, s5, s5, cell*0.7, bgFill);
+      ctx.fillStyle = fill;
+      roundRectCtx(ctx, x+2*cell, y+2*cell, s3, s3, cell*0.9, fill);
+    } else if (style === 'dot') {
+      ctx.fillStyle = bgFill;
+      roundRectCtx(ctx, x+cell, y+cell, s5, s5, cell*0.8, bgFill);
+      ctx.beginPath();
+      ctx.arc(x+s7/2, y+s7/2, cell*1.5, 0, Math.PI*2);
+      ctx.fillStyle = fill;
+      ctx.fill();
+    }
+  } else {
+    // fallback
     ctx.fillStyle = fill;
-    roundRectCtx(ctx, x, y, s7, s7, rr, fill);
-    roundRectCtx(ctx, x+cell, y+cell, s5, s5, cell*0.7, bgFill);
-    roundRectCtx(ctx, x+2*cell, y+2*cell, s3, s3, cell*0.9, fill);
-  } else if (style === 'dot') {
-    ctx.fillStyle = fill;
-    roundRectCtx(ctx, x, y, s7, s7, cell*1.6, fill);
-    roundRectCtx(ctx, x+cell, y+cell, s5, s5, cell*0.8, bgFill);
-    ctx.beginPath();
-    ctx.arc(x+s7/2, y+s7/2, cell*1.5, 0, Math.PI*2);
-    ctx.fillStyle = fill;
-    ctx.fill();
+    ctx.fillRect(x, y, s7, cell);
+    ctx.fillRect(x, y+s7-cell, s7, cell);
+    ctx.fillRect(x, y+cell, cell, s5);
+    ctx.fillRect(x+s7-cell, y+cell, cell, s5);
+    ctx.fillRect(x+2*cell, y+2*cell, s3, s3);
   }
 }
 
@@ -1100,24 +1054,21 @@ function drawConnectedDot(ctx, x, y, size, matrix, r, c, n, pad) {
   const hasB = r+1 < n && matrix[r+1] && matrix[r+1][c] && !isFinderZone(r+1,c,n);
   const hasL = c-1 >= 0 && matrix[r] && matrix[r][c-1] && !isFinderZone(r,c-1,n);
   const hasT = r-1 >= 0 && matrix[r-1] && matrix[r-1][c] && !isFinderZone(r-1,c,n);
-  const rad = size * 0.38;
-  const tl = (!hasT && !hasL) ? rad : 1;
-  const tr = (!hasT && !hasR) ? rad : 1;
-  const br = (!hasB && !hasR) ? rad : 1;
-  const bl = (!hasB && !hasL) ? rad : 1;
-  // Draw with variable-radius corners
+  const rad = size * 0.28;
   const p = pad/2;
   const lx = x+p, ty = y+p, rx = x+size-p, by = y+size-p;
   ctx.beginPath();
-  ctx.moveTo(lx+tl, ty);
-  ctx.lineTo(rx-tr, ty);
-  ctx.arcTo(rx, ty, rx, ty+tr, tr);
-  ctx.lineTo(rx, by-br);
-  ctx.arcTo(rx, by, rx-br, by, br);
-  ctx.lineTo(lx+bl, by);
-  ctx.arcTo(lx, by, lx, by-bl, bl);
-  ctx.lineTo(lx, ty+tl);
-  ctx.arcTo(lx, ty, lx+tl, ty, tl);
+  // Use a simplified rectangle with consistent rounding for better connectivity
+  const rr = size * 0.2;
+  ctx.moveTo(lx+rr, ty);
+  ctx.lineTo(rx-rr, ty);
+  ctx.arcTo(rx, ty, rx, ty+rr, rr);
+  ctx.lineTo(rx, by-rr);
+  ctx.arcTo(rx, by, rx-rr, by, rr);
+  ctx.lineTo(lx+rr, by);
+  ctx.arcTo(lx, by, lx, by-rr, rr);
+  ctx.lineTo(lx, ty+rr);
+  ctx.arcTo(lx, ty, lx+rr, ty, rr);
   ctx.closePath();
   ctx.fill();
 }
@@ -1136,9 +1087,6 @@ function drawLogo(ctx, img, size, ratio, bgEnabled, bgColor) {
   ctx.drawImage(img, lx, ly, logoS, logoS);
 }
 
-// =========================================
-// SETTINGS HANDLERS
-// =========================================
 function setEC(btn, level) {
   document.querySelectorAll('.ec-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
@@ -1198,9 +1146,6 @@ function selectBgTransparent() {
   scheduleRender();
 }
 
-// =========================================
-// LOGO UPLOAD
-// =========================================
 function handleLogoUpload(input) {
   if (!input.files[0]) return;
   processLogoFile(input.files[0]);
@@ -1246,9 +1191,6 @@ function clearBuiltinIcon() {
   scheduleRender();
 }
 
-// =========================================
-// DOWNLOAD / EXPORT
-// =========================================
 function downloadPNG() {
   const canvas = document.getElementById('qrCanvas');
   if (!canvas.width) return;
@@ -1290,6 +1232,7 @@ function downloadSVG() {
     for (let r = 0; r < moduleCount; r++) {
       for (let c = 0; c < moduleCount; c++) {
         if (!qr.isDark(r, c)) continue;
+        if (isFinderZone(r, c, moduleCount)) continue;
         const x = (c + margin) * cell, y = (r + margin) * cell;
         svgParts.push(svgDot(x, y, cell, state.dotStyle, state.dotPadding));
       }
@@ -1314,6 +1257,7 @@ function svgDot(x, y, size, style, padding) {
     case 'dots':    return `<circle cx="${x+size/2}" cy="${y+size/2}" r="${ps/2}"/>`;
     case 'rounded': return `<rect x="${px}" y="${py}" width="${ps}" height="${ps}" rx="${ps*0.28}"/>`;
     case 'extra-rounded': return `<rect x="${px}" y="${py}" width="${ps}" height="${ps}" rx="${ps*0.45}"/>`;
+    case 'square':
     default: return `<rect x="${px}" y="${py}" width="${ps}" height="${ps}"/>`;
   }
 }
@@ -1336,11 +1280,7 @@ function copyToClipboard() {
   });
 }
 
-// =========================================
-// SOUND EFFECTS (Web Audio API)
-// =========================================
 let audioCtx = null;
-
 function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   return audioCtx;
@@ -1389,9 +1329,6 @@ function toggleSound() {
   if (state.soundEnabled) playClickSound();
 }
 
-// =========================================
-// TOAST
-// =========================================
 function showToast(msg, type = 'info') {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
@@ -1407,9 +1344,6 @@ function showToast(msg, type = 'info') {
 
 function scrollToTop() { window.scrollTo({top:0,behavior:'smooth'}); }
 
-// =========================================
-// KEYBOARD SHORTCUT: Ctrl+Enter = Generate
-// =========================================
 document.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
     e.preventDefault();
@@ -1417,7 +1351,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Tooltip for generate button
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnGenerate').title = 'Generate QR (Ctrl+Enter)';
 });
